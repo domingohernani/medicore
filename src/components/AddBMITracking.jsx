@@ -1,7 +1,9 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function addBMITracking() {
+  const navigate = useNavigate();
+
   return (
     <section className="w-9/12 mx-auto">
       <section className="p-3 text-center bg-white border rounded-lg border-C0076BE text-blue-950">
@@ -125,12 +127,20 @@ export default function addBMITracking() {
           </div>
         </div>
         <div className="flex w-3/6 mx-auto mt-5 mb-8 gap-9">
-          <button className="flex-1 text-white" onClick={()=> console.log("Hello Guiys")}>Add</button>
-          <button className="flex-1 text-gray-500 bg-CEDEDED border-blue-950">
-            <NavLink to={"/bmitracking"} className="block h-full px-3">
-              Cancel
-            </NavLink>
+          <button
+            className="flex-1 text-white"
+            onClick={() => {
+              navigate("/bmitracking");
+            }}
+          >
+            Add
           </button>
+          <button
+            className="flex-1 text-gray-500 bg-CEDEDED border-blue-950"
+            onClick={() => {
+              navigate("/bmitracking");
+            }}
+          >Cancel</button>
         </div>
       </section>
     </section>

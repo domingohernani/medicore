@@ -6,12 +6,14 @@ import { NavLink } from "react-router-dom";
 export default function BMITracking() {
   // TODO:
   // Change the bg color of the "active"
+  const childId = 345;
+
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h4 className="px-6 py-2 font-semibold bg-white rounded-lg">
+        <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Body Mass Index Tracking
-        </h4>
+        </h3>
         <NavLink to={"/addchildinfo"}>
           <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
             <img src={addIcon} alt="" width={"25px"} /> Add New
@@ -36,7 +38,9 @@ export default function BMITracking() {
             <td className="text-blue-600 underline cursor-pointer ">
               <div className="flex items-center justify-center gap-2">
                 <img src={info} alt="" width={"20px"} />
-                <NavLink to={"/viewbmitracking"} >View info</NavLink>
+                <NavLink to={"/viewbmitracking/" + childId}>
+                  View info
+                </NavLink>
               </div>
             </td>
           </tr>

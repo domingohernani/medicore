@@ -11,6 +11,8 @@ import Immunization from "./pages/Immunization";
 import Reminders from "./pages/Reminders";
 import AddBMITracking from "./components/AddBMITracking";
 import ViewBMITracking from "./components/ViewBMITracking";
+import ViewImmunization from "./components/ViewImmunization";
+import AddImmunization from "./components/AddImmunization";
 
 function App() {
   return (
@@ -27,10 +29,13 @@ function App() {
             <Route path="/" element={<DashBoard />} />
             <Route path="/listofchildren" element={<ListOfChildren />} />
             <Route path="/bmitracking" element={<BMITracking />} />
+            <Route path="/viewbmitracking/:id" element={<ViewBMITracking />} />
             <Route path="/immunization" element={<Immunization />} />
+            <Route path="/viewimmunization/:id" element={<ViewImmunization />} />
             <Route path="/reminders" element={<Reminders />} />
+
             <Route path="/addchildinfo" element={<AddBMITracking />} />
-            <Route path="/viewbmitracking" element={<ViewBMITracking />} />
+            <Route path="/addimmunization" element={<AddImmunization />} />
           </Routes>
         </section>
       </BrowserRouter>

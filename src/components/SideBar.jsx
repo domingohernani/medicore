@@ -8,7 +8,9 @@ import reminders from "../assets/sidebarassets/reminders.svg";
 
 export default function SideBar() {
   const sideBarLinkColor = ({ isActive }) => {
-    return isActive ? ' outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25' : 'bg-CEDEDED rounded-lg';
+    return isActive
+      ? " outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25"
+      : "bg-CEDEDED rounded-lg";
   };
   return (
     <section className="flex flex-col h-full gap-5 px-5 py-5 bg-white rounded-lg ">
