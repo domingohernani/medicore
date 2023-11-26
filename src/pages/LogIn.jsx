@@ -33,9 +33,9 @@ export default function Login() {
             Log In
           </button>
           <div className="flex flex-row items-center gap-2">
-            <hr className="bg-black grow" />
+            <hr className="bg-black loginHr grow" />
             <p className="font-semibold ">Log in as</p>
-            <hr className="bg-black grow" />
+            <hr className="bg-black loginHr grow" />
           </div>
           <button className="w-1/3 py-1 mx-auto bg-white border border-blue-950 ">
             Admin

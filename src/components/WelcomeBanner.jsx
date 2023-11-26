@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import WelcomeIllustration from "../assets/dashboardassets/welcomeillustration.svg";
 
-export default function WelcomeBanner() {
+const WelcomeBanner = () => {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const month = currentDate.toLocaleString("en-US", { month: "long" }).toUpperCase();
+  const day = currentDate.toLocaleString("en-US", { day: "numeric" }); 
   return (
     <section className="flex gap-3">
       <div className="relative flex flex-col items-start justify-center py-10 pl-6 rounded-lg -z-10 outline outline-1 outline-C0076BE bg-C0076BE/20 basis-8/12 min-h-max">
@@ -21,11 +33,14 @@ export default function WelcomeBanner() {
           <p className="mb-2">Today</p>
           <hr />
         </div>
+        <hr className="currentDateHr"/>
         <div className="flex flex-col items-center justify-center flex-1 text-xl ">
-          <h3>NOVEMBER</h3>
-          <h3>07</h3>
+          <h2>{month}</h2>
+          <h3>{day}</h3>
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default WelcomeBanner;
