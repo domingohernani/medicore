@@ -54,7 +54,7 @@ export default function BMITracking() {
                 </option>
                 <option
                   value="active"
-                  key="active"
+                  key="completed"
                   className="border-none outline-none"
                 >
                   Completed

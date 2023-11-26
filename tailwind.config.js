@@ -13,6 +13,7 @@ export default {
         C0D3E5A: "#0D3E5A",
         C869EAC: "#869EAC",
         C5FA9D6: "#5FA9D6",
+        C2AA8F5: "#2AA8F5",
       },
     },
   },

@@ -62,9 +62,20 @@ button {
   font-family: "Manrope", sans-serif;
 }
 
+.loginHeader {
+  font-family: "Alfa Slab One", serif;
+}
+
+.logInContainer {
+  box-shadow: rgba(9, 111, 255, 0.274) 0px 7px 29px 0px;
+}
+
 td,
 th {
   margin: 5rem;
   padding: 0.5rem 1rem;
 }
-
+hr {
+  height: 0.1px;
+  border: none;
+}
