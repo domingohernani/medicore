@@ -79,3 +79,24 @@ th {
   height: 0.1px;
   border: none;
 }
+.prescriptionHr {
+  border: 1px solid rgb(222, 203, 203);
+}
+
+/* para doon sa Medical History & Records */
+.medicalhistoryrecords > li {
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
+.bmiHistory > li {
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 1rem;
+  width: max-content;
+  border-radius: 0.5rem;
+  background-color: white;
+  font-size: smaller;
+}
