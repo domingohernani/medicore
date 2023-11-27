@@ -21,7 +21,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LogIn />} />
         <Route
           path="/*"
           element={
@@ -34,6 +33,8 @@ function App() {
               </section>
               <section className="float-right my-20 mr-3 rounded-lg main-content ">
                 <Routes>
+                  <Route path="/login" element={<LogIn />} />
+
                   {/* Dashboard */}
                   <Route path="/" element={<DashBoard />} />
 

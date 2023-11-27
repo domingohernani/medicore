@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
   console.log("NavBar was rendered");
+
+  const [loggedIn, setLoggedIn] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const result = localStorage.getItem("isLoggedIn");
+
+    setLoggedIn(result);
+
+    if (result !== "true") {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <nav className="flex flex-row items-center px-8 py-3 bg-white rounded-lg">
       <div className="w-1/6">MediCore</div>

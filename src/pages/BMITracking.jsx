@@ -8,8 +8,28 @@ import axios from "axios";
 
 export default function BMITracking() {
   const [statusModal, setStatusModal] = useState(false);
-
   const [children, setChildren] = useState([]);
+ 
+
+  const handleSortChange = async (event) => {
+    if (event.target.value === "active") {
+      try {
+        const response = await axios.get("http://localhost:8800/bmitracking");
+        setChildren(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const response = await axios.get(
+          "http://localhost:8800/showCompletedChildren"
+        );
+        setChildren(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   // Kinukuha yung mga children from the database
   useEffect(() => {
@@ -64,7 +84,10 @@ export default function BMITracking() {
             <th>Status</th>
             <th className="text-right">
               <label className="font-medium">Sort By: </label>
-              <select className="font-medium text-center border-2 border-white outline-none ">
+              <select
+                className="font-medium text-center border-2 border-white outline-none "
+                onChange={handleSortChange}
+              >
                 <option
                   value="active"
                   key="active"
@@ -73,7 +96,7 @@ export default function BMITracking() {
                   Active
                 </option>
                 <option
-                  value="active"
+                  value="completed"
                   key="completed"
                   className="border-none outline-none"
                 >
@@ -98,7 +121,7 @@ export default function BMITracking() {
                     Active
                   </button>
                 </td>
-              
+
                 <td className="text-blue-600 underline cursor-pointer ">
                   <div className="flex items-center justify-center gap-2">
                     <img src={info} alt="" width={"20px"} />
