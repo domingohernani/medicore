@@ -15,7 +15,7 @@ export default function BMITracking() {
   useEffect(() => {
     const fetchAllChild = async () => {
       try {
-        const response = await axios.get("http://localhost:8800/bmitracking")
+        const response = await axios.get("http://localhost:8800/bmitracking");
         setChildren(response.data);
       } catch (error) {
         console.log(error);
@@ -84,25 +84,48 @@ export default function BMITracking() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Emma Watsons</td>
-            <td>4</td>
-            <td>Female</td>
-            <td>
-              <button
-                className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
-                onClick={toggleDeactivationModal}
-              >
-                Active
-              </button>
-            </td>
-            <td className="text-blue-600 underline cursor-pointer ">
-              <div className="flex items-center justify-center gap-2">
-                <img src={info} alt="" width={"20px"} />
-                <NavLink to={"/viewbmitracking/" + childId}>View info</NavLink>
-              </div>
-            </td>
-          </tr>
+          {children.map((child, index) => {
+            return (
+              <tr key={index}>
+                <td>{child.name}</td>
+                <td>{child.age}</td>
+                <td>{child.sex}</td>
+                <td>
+                  <button
+                    className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
+                    onClick={toggleDeactivationModal}
+                  >
+                    Active
+                  </button>
+                </td>
+              
+                <td className="text-blue-600 underline cursor-pointer ">
+                  <div className="flex items-center justify-center gap-2">
+                    <img src={info} alt="" width={"20px"} />
+                    <NavLink to={"/viewbmitracking/" + childId}>
+                      View info
+                    </NavLink>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+
+          {/* 
+          <td>
+            <button
+              className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
+              onClick={toggleDeactivationModal}
+            >
+              Active
+            </button>
+          </td>
+          <td className="text-blue-600 underline cursor-pointer ">
+            <div className="flex items-center justify-center gap-2">
+              <img src={info} alt="" width={"20px"} />
+              <NavLink to={"/viewbmitracking/" + childId}>View info</NavLink>
+            </div>
+          </td> */}
         </tbody>
       </table>
     </section>
