@@ -1,10 +1,14 @@
 import React from "react";
 import back from "../assets/bmitrackingassets/back.svg";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import AddBMI from "./AddBMI";
 
 export default function ViewBMITracking() {
-
   const navigate = useNavigate();
+
+  const childId = 345;
+
+  console.log("ViewBMITracking was rendered");
   return (
     <section>
       <div className="flex items-center justify-between gap-4">
@@ -18,12 +22,16 @@ export default function ViewBMITracking() {
           Body Mass Index Tracking Information
         </h3>
         <div className="flex items-center gap-4">
-          <button className="py-3 font-normal text-white bg-C1886C3 ">
-            Add Body Mass Index
-          </button>
-          <button className="py-3 font-normal text-white bg-C1886C3 ">
-            Add Medical History
-          </button>
+          <NavLink to={"/viewbmitracking/addbmi/" + childId}>
+            <button className="py-3 font-normal text-white bg-C1886C3">
+              Add Body Mass Index
+            </button>
+          </NavLink>
+          <NavLink to={"/viewbmitracking/addmedicalhistory/" + childId}>
+            <button className="py-3 font-normal text-white bg-C1886C3 ">
+              Add Medical History
+            </button>
+          </NavLink>
         </div>
       </div>
       <section className="flex gap-3 mt-2">

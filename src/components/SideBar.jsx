@@ -16,13 +16,9 @@ export default function SideBar() {
   };
 
   const changeBgByUrl = ({ isActive }) => {
-    const idPattern = /^\/viewbmitracking\/\d+$/;
-
-    if (
-      location.pathname.match(idPattern) ||
-      location.pathname === "/addchildinfo" ||
-      isActive
-    ) {
+    const urlPattern =
+      /^\/viewbmitracking(?:\/(?:addbmi|addmedicalhistory)\/\d+)?(?:\/\d+)?|\/addchildinfo$/;
+    if (location.pathname.match(urlPattern) || isActive) {
       return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
     } else {
       return "bg-CEDEDED rounded-lg";

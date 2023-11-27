@@ -13,7 +13,9 @@ import AddBMITracking from "./components/AddBMITracking";
 import ViewBMITracking from "./components/ViewBMITracking";
 import ViewImmunization from "./components/ViewImmunization";
 import AddImmunization from "./components/AddImmunization";
+import AddBMI from "./components/AddBMI";
 import LogIn from "./pages/Login";
+import AddMedicalHistory from "./components/AddMedicalHistory";
 
 function App() {
   return (
@@ -32,24 +34,39 @@ function App() {
               </section>
               <section className="float-right my-20 mr-3 rounded-lg main-content ">
                 <Routes>
+                  {/* Dashboard */}
                   <Route path="/" element={<DashBoard />} />
+
+                  {/* List of children */}
                   <Route path="/listofchildren" element={<ListOfChildren />} />
+
+                  {/* Bmi Tracking */}
                   <Route path="/bmitracking" element={<BMITracking />} />
+                  <Route path="/addchildinfo" element={<AddBMITracking />} />
                   <Route
                     path="/viewbmitracking/:id"
                     element={<ViewBMITracking />}
                   />
+                  <Route
+                    path="/viewbmitracking/addbmi/:id"
+                    element={<AddBMI />}
+                  />
+                  <Route
+                    path="/viewbmitracking/addmedicalhistory/:id"
+                    element={<AddMedicalHistory />}
+                  />
+                  {/* Immunization */}
                   <Route path="/immunization" element={<Immunization />} />
                   <Route
                     path="/viewimmunization/:id"
                     element={<ViewImmunization />}
                   />
-                  <Route path="/reminders" element={<Reminders />} />
-                  <Route path="/addchildinfo" element={<AddBMITracking />} />
                   <Route
                     path="/addimmunization"
                     element={<AddImmunization />}
                   />
+                  {/* Reminders */}
+                  <Route path="/reminders" element={<Reminders />} />
                 </Routes>
               </section>
             </>

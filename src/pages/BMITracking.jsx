@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import addIcon from "../assets/bmitrackingassets/addIcon.svg";
 import info from "../assets/bmitrackingassets/info.svg";
 import filter from "../assets/bmitrackingassets/filterIcon.svg";
 import { NavLink, useSearchParams } from "react-router-dom";
 import Deactivation from "../components/modals/Deactivation";
+import axios from "axios";
 
 export default function BMITracking() {
   const [statusModal, setStatusModal] = useState(false);
+
+  const [children, setChildren] = useState([]);
+
+  // Kinukuha yung mga children from the database
+  useEffect(() => {
+    const fetchAllChild = async () => {
+      try {
+        const response = await axios.get("http://localhost:8800/bmitracking")
+        setChildren(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllChild();
+  }, []);
 
   const toggleDeactivationModal = () => {
     setStatusModal(!statusModal);
@@ -24,7 +40,11 @@ export default function BMITracking() {
           Body Mass Index Tracking
         </h3>
         <div className="flex items-center flex-1 gap-2 ml-4">
-          <input type="text" className="w-2/3 h-8 pl-3 rounded-lg bg-CD9D9D9" placeholder="Search by name"/>
+          <input
+            type="text"
+            className="w-2/3 h-8 pl-3 rounded-lg bg-CD9D9D9"
+            placeholder="Search by name"
+          />
           <button className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg bg-C5FA9D6">
             <img src={filter} alt="" width={"20px"} /> Filter
           </button>

@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 export default function addBMITracking() {
   const navigate = useNavigate();
-
+  console.log("AddBMITracking was rendered");
   return (
     <section className="w-9/12 mx-auto">
       <section className="p-3 text-center bg-white border rounded-lg border-C0076BE text-blue-950">
@@ -105,7 +105,7 @@ export default function addBMITracking() {
             <label className="font-semibold">Weight</label>
             <div className="flex">
               <input
-                type="text"
+                type="number"
                 className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
               />
               <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
@@ -117,7 +117,7 @@ export default function addBMITracking() {
             <label className="font-semibold">Height</label>
             <div className="flex">
               <input
-                type="text"
+                type="number"
                 className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
               />
               <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
