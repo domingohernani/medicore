@@ -22,7 +22,7 @@ export default function NavBar() {
       <div className="w-1/6">MediCore</div>
       <div className="flex-1">
         <div className="relative ">
-          <input
+          {/* <input
             type="search"
             id="default-search"
             className="inline-block w-full h-6 p-5 pl-4 text-sm text-gray-900 border border-gray-300 border-none rounded-lg focus:outline-none bg-CEDEDED focus:ring-blue-500 focus:border-blue-500 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -46,7 +46,7 @@ export default function NavBar() {
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
               />
             </svg>
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="flex flex-row justify-end flex-1 gap-2">

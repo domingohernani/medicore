@@ -9,7 +9,6 @@ import axios from "axios";
 export default function BMITracking() {
   const [statusModal, setStatusModal] = useState(false);
   const [children, setChildren] = useState([]);
- 
 
   const handleSortChange = async (event) => {
     if (event.target.value === "active") {
@@ -46,6 +45,31 @@ export default function BMITracking() {
 
   const toggleDeactivationModal = () => {
     setStatusModal(!statusModal);
+  };
+
+  const manageActiveCompleted = (child) => {
+    const ageValue = parseInt(child);
+    let dateValue = child.replace(/\d+/g, "").trim();
+
+    if (ageValue > 5 && dateValue === "year/s") {
+      return (
+        <button
+          className="px-5 py-1 font-normal text-white bg-gray-600 rounded-3xl"
+          onClick={toggleDeactivationModal}
+        >
+          Completed
+        </button>
+      );
+    } else {
+      return (
+        <button
+          className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
+          onClick={toggleDeactivationModal}
+        >
+          Active
+        </button>
+      );
+    }
   };
 
   const childId = 345;
@@ -114,12 +138,13 @@ export default function BMITracking() {
                 <td>{child.age}</td>
                 <td>{child.sex}</td>
                 <td>
-                  <button
+                  {manageActiveCompleted(child.age)}
+                  {/* <button
                     className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
                     onClick={toggleDeactivationModal}
                   >
                     Active
-                  </button>
+                  </button> */}
                 </td>
 
                 <td className="text-blue-600 underline cursor-pointer ">
