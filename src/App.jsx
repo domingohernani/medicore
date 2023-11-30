@@ -16,6 +16,11 @@ import AddImmunization from "./components/AddImmunization";
 import AddBMI from "./components/AddBMI";
 import LogIn from "./pages/Login";
 import AddMedicalHistory from "./components/AddMedicalHistory";
+import ManageAccounts from "./pages/ManageAccounts";
+
+const isAdmin = () => {
+  return localStorage.getItem("role") === "president" ? true : false;
+};
 
 function App() {
   return (
@@ -45,15 +50,15 @@ function App() {
                   <Route path="/bmitracking" element={<BMITracking />} />
                   <Route path="/addchildinfo" element={<AddBMITracking />} />
                   <Route
-                    path="/viewbmitracking/:id"
+                    path="/viewbmitracking/:childId"
                     element={<ViewBMITracking />}
                   />
                   <Route
-                    path="/viewbmitracking/addbmi/:id"
+                    path="/viewbmitracking/addbmi/:childId"
                     element={<AddBMI />}
                   />
                   <Route
-                    path="/viewbmitracking/addmedicalhistory/:id"
+                    path="/viewbmitracking/addmedicalhistory/:childId"
                     element={<AddMedicalHistory />}
                   />
                   {/* Immunization */}
@@ -68,6 +73,14 @@ function App() {
                   />
                   {/* Reminders */}
                   <Route path="/reminders" element={<Reminders />} />
+
+                  {/* Manage Accounts */}
+                  {isAdmin() ? (
+                    <Route
+                      path="/manageaccounts"
+                      element={<ManageAccounts />}
+                    />
+                  ) : null}
                 </Routes>
               </section>
             </>

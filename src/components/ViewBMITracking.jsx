@@ -1,12 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import back from "../assets/bmitrackingassets/back.svg";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import AddBMI from "./AddBMI";
+import axios from "axios";
 
 export default function ViewBMITracking() {
+  const [childDetails, setChildDetails] = useState({});
   const navigate = useNavigate();
+  const { childId } = useParams();
 
-  const childId = 345;
+  const showStatusTag = (status) => {
+    const statusConfig = {
+      Active: {
+        className: "text-C40BE04",
+        label: "Active",
+      },
+      Inactive: {
+        className: "text-C1886C3",
+        label: "Inactive",
+      },
+      Completed: {
+        className: "text-C869EAC",
+        label: "Completed",
+      },
+    };
+
+    const config = statusConfig[status] || statusConfig.Completed;
+
+    return <span className={config.className}>{config.label}</span>;
+  };
+
+  useEffect(() => {
+    const fetchChildDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8800/viewbmitracking/${childId}`
+        );
+        setChildDetails(response.data[0]);
+        setMothersName(response.data[1].parent_name);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchChildDetails();
+  }, [childId]);
 
   console.log("ViewBMITracking was rendered");
   return (
@@ -37,51 +74,47 @@ export default function ViewBMITracking() {
       <section className="flex gap-3 mt-2">
         <div className="grid grid-cols-4 gap-4 px-5 py-3 bg-white rounded-lg">
           <span className="col-start-1 col-end-5 font-light">
-            ID: CAB-UR-0500
+            ID: CAB-UR-{childDetails.child_id}
           </span>
           <div className="flex flex-col ">
             <span>Name</span>
-            <span className="font-bold">Juan Dela Cruz</span>
+            <span className="font-bold">{childDetails.name}</span>
           </div>
           <div className="flex flex-col">
             <span>Age</span>
-            <span className="font-bold">5 years old</span>
+            <span className="font-bold">{childDetails.age}</span>
           </div>
           <div className="flex flex-col">
             <span>Gender</span>
-            <span className="font-bold">Female</span>
+            <span className="font-bold">{childDetails.sex}</span>
           </div>
           <div className="flex flex-col">
             <span>Birthdate</span>
-            <span className="font-bold">April 01, 2018</span>
+            <span className="font-bold">{childDetails.date_of_birth}</span>
           </div>
           <div className="flex flex-col">
             <span>Place of birth</span>
-            <span className="font-bold">
-              Sacred Heart Hospital, Urdaneta City
-            </span>
+            <span className="font-bold">{childDetails.place_of_birth}</span>
           </div>
           <div className="flex flex-col">
             <span>Contact no.</span>
-            <span className="font-bold">09123456789</span>
+            <span className="font-bold">{childDetails.family_number}</span>
           </div>
           <div className="flex flex-col">
             <span>Mother's Name</span>
-            <span className="font-bold">Maria Dela Cruz</span>
+            <span className="font-bold">{childDetails.mother}</span>
           </div>
           <div className="flex flex-col">
             <span>Father's Name</span>
-            <span className="font-bold">Brad Dela Cruz</span>
+            <span className="font-bold">{childDetails.father}</span>
           </div>
           <div className="flex flex-col col-span-3 ">
             <span>Address</span>
-            <span className="font-bold">
-              #123 Zone 1, Barangay Cabaruan, Urdaneta City, Pangasinan
-            </span>
+            <span className="font-bold">{childDetails.address}</span>
           </div>
           <div className="">
             <span>Status: </span>
-            <span className="text-C40BE04">Active</span>
+            {showStatusTag(childDetails.status)}
           </div>
         </div>
         <div className="py-3 overflow-y-scroll text-center bg-white rounded-lg max-h-72 px-7">
@@ -148,7 +181,7 @@ export default function ViewBMITracking() {
             </li>
           </ul>
         </div>
-        <div className="w-64 mx-1 ">
+        <div className="w-64 mx-1">
           <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg">
             BMI History
           </span>

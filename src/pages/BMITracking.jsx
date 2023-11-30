@@ -7,10 +7,13 @@ import Deactivation from "../components/modals/Deactivation";
 import axios from "axios";
 
 export default function BMITracking() {
+  console.log("BMI Tracking is rendered");
+
   const [statusModal, setStatusModal] = useState(false);
   const [children, setChildren] = useState([]);
+  const [search, setSearch] = useState("");
 
-  const handleSortChange = async (event) => {
+  const handleFilterChange = async (event) => {
     if (event.target.value === "active") {
       try {
         const response = await axios.get("http://localhost:8800/activeBMI");
@@ -52,36 +55,33 @@ export default function BMITracking() {
     setStatusModal(!statusModal);
   };
 
-  const showStatusButton = (child) => {
-    if (child === "Active") {
-      return (
-        <button
-          className="px-5 py-1 font-normal text-white bg-C40BE04 rounded-3xl"
-          onClick={toggleDeactivationModal}
-        >
-          Active
-        </button>
-      );
-    } else if (child === "Inactive") {
+  const showStatusButton = (status) => {
+    const statusConfig = {
+      Active: {
+        className: "bg-C40BE04",
+        label: "Active",
+      },
+      Inactive: {
+        className: "bg-C1886C3",
+        label: "Inactive",
+      },
+      Completed: {
+        className: "bg-C869EAC",
+        label: "Completed",
+      },
+    };
+
+    const config = statusConfig[status] || statusConfig.Completed;
+
+    return (
       <button
-        className="px-5 py-1 font-normal text-white bg-C0076BE rounded-3xl"
+        className={`px-5 py-1 font-normal text-white rounded-3xl ${config.className}`}
         onClick={toggleDeactivationModal}
       >
-        Active
-      </button>;
-    } else {
-      return (
-        <button
-          className="px-5 py-1 font-normal text-white bg-C869EAC rounded-3xl"
-          onClick={toggleDeactivationModal}
-        >
-          Completed
-        </button>
-      );
-    }
+        {config.label}
+      </button>
+    );
   };
-
-  const childId = 345;
 
   return (
     <section>
@@ -97,9 +97,11 @@ export default function BMITracking() {
             type="text"
             className="w-2/3 h-8 pl-3 rounded-lg bg-CD9D9D9"
             placeholder="Search by name"
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
           <button className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg bg-C5FA9D6">
-            <img src={filter} alt="" width={"20px"} /> Filter
+            <img src={filter} alt="" width={"20px"} /> Sort
           </button>
         </div>
         <NavLink to={"/addchildinfo"}>
@@ -114,12 +116,13 @@ export default function BMITracking() {
             <th>Name</th>
             <th>Age</th>
             <th>Sex</th>
+            <th>Zone</th>
             <th>Status</th>
             <th className="text-right">
-              <label className="font-medium">Sort By: </label>
+              <label className="font-medium">Filter By: </label>
               <select
                 className="font-medium text-center border-2 border-white outline-none "
-                onChange={handleSortChange}
+                onChange={handleFilterChange}
               >
                 <option
                   value="active"
@@ -147,24 +150,31 @@ export default function BMITracking() {
           </tr>
         </thead>
         <tbody>
-          {children.map((child, index) => {
-            return (
-              <tr key={index}>
-                <td>{child.name}</td>
-                <td>{child.age}</td>
-                <td>{child.sex}</td>
-                <td>{showStatusButton(child.status)}</td>
-                <td className="text-blue-600 underline cursor-pointer ">
-                  <div className="flex items-center justify-center gap-2">
-                    <img src={info} alt="" width={"20px"} />
-                    <NavLink to={"/viewbmitracking/" + childId}>
-                      View info
-                    </NavLink>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+          {children
+            .filter((child) => {
+              return search.toLowerCase() === ""
+                ? child
+                : child.name.toLowerCase().includes(search.toLowerCase());
+            })
+            .map((child, index) => {
+              return (
+                <tr key={index}>
+                  <td>{child.name}</td>
+                  <td>{child.age}</td>
+                  <td>{child.sex}</td>
+                  <td>Zone {child.zone_number}</td>
+                  <td>{showStatusButton(child.status)}</td>
+                  <td className="text-blue-600 underline cursor-pointer ">
+                    <div className="flex items-center justify-center gap-2">
+                      <img src={info} alt="" width={"20px"} />
+                      <NavLink to={`/viewbmitracking/${child.child_id}`}>
+                        View info
+                      </NavLink>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
 
           {/* 
           <td>

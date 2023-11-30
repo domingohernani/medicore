@@ -5,6 +5,11 @@ import bmi from "../assets/sidebarassets/bmi.svg";
 import immunization from "../assets/sidebarassets/immunization.svg";
 import listofchildren from "../assets/sidebarassets/listofchildren.svg";
 import reminders from "../assets/sidebarassets/reminders.svg";
+import manageaccount from "../assets/sidebarassets/manageaccount.svg";
+
+const isAdmin = () => {
+  return localStorage.getItem("role") === "president" ? true : false;
+};
 
 export default function SideBar() {
   const location = useLocation();
@@ -26,7 +31,7 @@ export default function SideBar() {
   };
 
   return (
-    <section className="flex flex-col h-full gap-5 px-5 py-5 bg-white rounded-lg ">
+    <section className="flex flex-col h-full gap-5 px-3 py-5 bg-white rounded-lg ">
       <NavLink to={"/"} className={sideBarLinkColor}>
         <div className="flex items-center gap-2 px-3 py-3 rounded-lg ">
           <img src={dashboard} alt="" className="h-6 w-7" />
@@ -57,6 +62,14 @@ export default function SideBar() {
           <span className="font-medium">Reminders</span>
         </div>
       </NavLink>
+      {isAdmin() ? (
+        <NavLink to={"/manageaccounts"} className={sideBarLinkColor}>
+          <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
+            <img src={manageaccount} alt="" className="w-6 h-6" />
+            <span className="font-medium">Manage Account</span>
+          </div>
+        </NavLink>
+      ) : null}
     </section>
   );
 }
