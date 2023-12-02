@@ -3,13 +3,26 @@ import back from "../assets/bmitrackingassets/back.svg";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import AddBMI from "./AddBMI";
 import axios from "axios";
+import editIcon from "../assets/bmitrackingassets/editIcon.svg";
+import cancelIcon from "../assets/bmitrackingassets/cancelIcon.svg";
+import applyIcon from "../assets/bmitrackingassets/applyIcon.svg";
 
 export default function ViewBMITracking() {
   const [childDetails, setChildDetails] = useState({});
   const [bmiHistory, setBmiHistory] = useState([]);
   const [historyRecords, setHistoryRecords] = useState([]);
+  const [updateButtonClicked, setUpdateButtonClicked] = useState(false);
   const navigate = useNavigate();
   const { childId } = useParams();
+
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [placeofbirth, setPlaceofbirth] = useState("");
+  const [number, setNumber] = useState("");
+  const [mothersname, setMothersname] = useState("");
+  const [fathersname, setFathersname] = useState("");
+  const [address, setAddress] = useState("");
 
   const calculateBMI = (value1, value2) => {
     const weightInKg = value1;
@@ -63,6 +76,31 @@ export default function ViewBMITracking() {
     return <span className={config.className}>{config.label}</span>;
   };
 
+  const updateRecord = () => {
+    setUpdateButtonClicked(!updateButtonClicked);
+  };
+
+  const applyChanges = () => {
+    console.log("Name: " + name);
+    console.log("Gender: " + gender);
+    console.log("Birthdate: " + birthdate);
+    console.log("Place of Birth: " + placeofbirth);
+    console.log("Number: " + number);
+    console.log("Mother's Name: " + mothersname);
+    console.log("Father's Name: " + fathersname);
+    console.log("Address: " + address);
+  };
+
+  const capitalizeAfterSpace = (inputString) => {
+    const words = inputString.split(" ");
+    const capitalizedWords = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    const resultString = capitalizedWords.join(" ");
+
+    return resultString;
+  };
+
   useEffect(() => {
     const fetchChildDetails = async () => {
       try {
@@ -79,7 +117,7 @@ export default function ViewBMITracking() {
     fetchChildDetails();
   }, [childId]);
 
-  console.log("ViewBMITracking was rendered");
+  // console.log("ViewBMITracking was rendered");
   return (
     <section>
       <div className="flex items-center justify-between gap-4">
@@ -107,12 +145,51 @@ export default function ViewBMITracking() {
       </div>
       <section className="flex gap-3 mt-2">
         <div className="grid grid-cols-4 gap-4 px-5 py-3 bg-white rounded-lg">
-          <span className="col-start-1 col-end-5 font-light">
+          <span className="col-start-1 col-end-4 font-light">
             ID: CAB-UR-{childDetails.child_id}
+          </span>
+          <span className="flex items-center justify-end col-start-4 col-end-4 gap-2 font-light ">
+            {updateButtonClicked ? (
+              <>
+                <img
+                  src={applyIcon}
+                  alt="icon"
+                  width={"20px"}
+                  className="cursor-pointer"
+                  title="Apply changes"
+                  onClick={applyChanges}
+                />
+                <img
+                  src={cancelIcon}
+                  alt="icon"
+                  width={"20px"}
+                  className="cursor-pointer"
+                  title="Cancel changes"
+                  onClick={() => setUpdateButtonClicked(false)}
+                />
+              </>
+            ) : null}
+            <img
+              src={editIcon}
+              alt="icon"
+              width={"18px"}
+              className="cursor-pointer"
+              onClick={updateRecord}
+            />
           </span>
           <div className="flex flex-col ">
             <span>Name</span>
-            <span className="font-bold">{childDetails.name}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                placeholder={childDetails.name}
+                className="font-bold"
+                value={name}
+                onChange={(e) => setName(capitalizeAfterSpace(e.target.value))}
+              />
+            ) : (
+              <span className="font-bold">{childDetails.name}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Age</span>
@@ -120,31 +197,111 @@ export default function ViewBMITracking() {
           </div>
           <div className="flex flex-col">
             <span>Gender</span>
-            <span className="font-bold">{childDetails.sex}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                placeholder={childDetails.sex}
+                className="font-bold"
+                value={gender}
+                onChange={(e) =>
+                  setGender(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.sex}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Birthdate</span>
-            <span className="font-bold">{childDetails.date_of_birth}</span>
+            {updateButtonClicked ? (
+              <input
+                type="date"
+                value={birthdate}
+                onChange={(e) => setBirthdate(e.target.value)}
+              />
+            ) : (
+              <span className="font-bold">{childDetails.date_of_birth}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Place of birth</span>
-            <span className="font-bold">{childDetails.place_of_birth}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                placeholder={childDetails.place_of_birth}
+                className="font-bold"
+                value={placeofbirth}
+                onChange={(e) =>
+                  setPlaceofbirth(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.place_of_birth}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Contact no.</span>
-            <span className="font-bold">{childDetails.family_number}</span>
+            {updateButtonClicked ? (
+              <input
+                type="number"
+                placeholder={childDetails.family_number}
+                className="font-bold"
+                value={number}
+                onChange={(e) =>
+                  setNumber(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.family_number}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Mother's Name</span>
-            <span className="font-bold">{childDetails.mother}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                className="font-bold"
+                placeholder={childDetails.mother}
+                value={mothersname}
+                onChange={(e) =>
+                  setMothersname(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.mother}</span>
+            )}
           </div>
           <div className="flex flex-col">
             <span>Father's Name</span>
-            <span className="font-bold">{childDetails.father}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                className="font-bold"
+                placeholder={childDetails.father}
+                value={fathersname}
+                onChange={(e) =>
+                  setFathersname(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.father}</span>
+            )}
           </div>
           <div className="flex flex-col col-span-3 ">
             <span>Address</span>
-            <span className="font-bold">{childDetails.address}</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                className="font-bold"
+                placeholder={childDetails.address}
+                value={address}
+                onChange={(e) =>
+                  setAddress(capitalizeAfterSpace(e.target.value))
+                }
+              />
+            ) : (
+              <span className="font-bold">{childDetails.address}</span>
+            )}
           </div>
           <div className="">
             <span>Status: </span>
@@ -173,7 +330,7 @@ export default function ViewBMITracking() {
           <ul className="px-8 py-2 text-left text-gray-500 list-disc bg-white rounded-lg medicalhistoryrecords ">
             {historyRecords.map((record, index) => {
               return (
-                <li>
+                <li key={index}>
                   <span className="block">Date: {record.formatted_date}</span>
                   <span className="block">Allergies: {record.allergies}</span>
                   <span className="block">
