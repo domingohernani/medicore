@@ -113,6 +113,7 @@ export default function BMITracking() {
       <table className="w-full mt-3 bg-white border border-collapse rounded-lg table-auto">
         <thead>
           <tr className="my-5 text-center border-b">
+            <th>Child ID</th>
             <th>Name</th>
             <th>Age</th>
             <th>Sex</th>
@@ -159,6 +160,7 @@ export default function BMITracking() {
             .map((child, index) => {
               return (
                 <tr key={index}>
+                  <td>CAB-UR-{child.child_id}</td>
                   <td>{child.name}</td>
                   <td>{child.age}</td>
                   <td>{child.sex}</td>

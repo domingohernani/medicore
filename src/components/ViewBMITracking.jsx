@@ -6,8 +6,41 @@ import axios from "axios";
 
 export default function ViewBMITracking() {
   const [childDetails, setChildDetails] = useState({});
+  const [bmiHistory, setBmiHistory] = useState([]);
+  const [historyRecords, setHistoryRecords] = useState([]);
   const navigate = useNavigate();
   const { childId } = useParams();
+
+  const calculateBMI = (value1, value2) => {
+    const weightInKg = value1;
+    const heightInMeters = value2 / 100;
+    const bmi = (weightInKg / Math.pow(heightInMeters, 2)).toFixed(2);
+
+    const underweightRange = 18.5;
+    const normalRange = 24.9;
+    const overweightRange = 29.9;
+
+    let bmiCategory = "";
+
+    if (bmi < underweightRange) {
+      bmiCategory = "Underweight";
+    } else if (bmi <= normalRange) {
+      bmiCategory = "Normal";
+    } else if (bmi <= overweightRange) {
+      bmiCategory = "Overweight";
+    } else {
+      bmiCategory = "Obese";
+    }
+
+    return (
+      <>
+        <li>BMI: {bmi}</li>
+        <li>
+          Interpretation: <span className="text-C40BE04">{bmiCategory}</span>
+        </li>
+      </>
+    );
+  };
 
   const showStatusTag = (status) => {
     const statusConfig = {
@@ -33,11 +66,12 @@ export default function ViewBMITracking() {
   useEffect(() => {
     const fetchChildDetails = async () => {
       try {
-        const response = await axios.get(
+        const { data } = await axios.get(
           `http://localhost:8800/viewbmitracking/${childId}`
         );
-        setChildDetails(response.data[0]);
-        setMothersName(response.data[1].parent_name);
+        setChildDetails(data.childDetails[0]);
+        setBmiHistory(data.bmiHistory);
+        setHistoryRecords(data.historyRecords);
       } catch (error) {
         console.log(error);
       }
@@ -137,48 +171,19 @@ export default function ViewBMITracking() {
           <h4 className="text-blue-600">Medical History & Records</h4>
           <hr className="flex-1" />
           <ul className="px-8 py-2 text-left text-gray-500 list-disc bg-white rounded-lg medicalhistoryrecords ">
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
-            <li>
-              <span className="block">Date: January 25,2023</span>
-              <span className="block">Allergies: N/A</span>
-              <span className="block">Temperature: 36.25</span>
-              <span className="block">Coughs: No</span>
-              <span className="block">Colds: No</span>
-            </li>
+            {historyRecords.map((record, index) => {
+              return (
+                <li>
+                  <span className="block">Date: {record.formatted_date}</span>
+                  <span className="block">Allergies: {record.allergies}</span>
+                  <span className="block">
+                    Temperature: {record.temperature}
+                  </span>
+                  <span className="block">Coughs: {record.cough}</span>
+                  <span className="block">Colds: {record.cold}</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div className="w-64 mx-1">
@@ -186,61 +191,18 @@ export default function ViewBMITracking() {
             BMI History
           </span>
           <ul className="px-8 py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
-            <li>
-              <span>Date: January 2023</span>
-              <ul className="px-6 py-2 list-disc ">
-                <li>Weight: 20 kg</li>
-                <li>Height: 1.092</li>
-                <li>BMI: 16.80</li>
-                <li>
-                  Interpretation: <span className="text-C40BE04">NORMAL</span>
+            {bmiHistory.map((bmi, element) => {
+              return (
+                <li key={element}>
+                  <span>Date: {bmi.ht_date}</span>
+                  <ul className="px-6 py-2 list-disc ">
+                    <li>Weight: {bmi.weight} kg</li>
+                    <li>Height: {bmi.height} cm</li>
+                    {calculateBMI(bmi.weight, bmi.height)}
+                  </ul>
                 </li>
-              </ul>
-            </li>
-            <li>
-              <span>Date: January 2023</span>
-              <ul className="px-6 py-2 list-disc ">
-                <li>Weight: 20 kg</li>
-                <li>Height: 1.092</li>
-                <li>BMI: 16.80</li>
-                <li>
-                  Interpretation: <span className="text-C40BE04">NORMAL</span>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <span>Date: January 2023</span>
-              <ul className="px-6 py-2 list-disc ">
-                <li>Weight: 20 kg</li>
-                <li>Height: 1.092</li>
-                <li>BMI: 16.80</li>
-                <li>
-                  Interpretation: <span className="text-C40BE04">NORMAL</span>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <span>Date: January 2023</span>
-              <ul className="px-6 py-2 list-disc ">
-                <li>Weight: 20 kg</li>
-                <li>Height: 1.092</li>
-                <li>BMI: 16.80</li>
-                <li>
-                  Interpretation: <span className="text-C40BE04">NORMAL</span>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <span>Date: January 2023</span>
-              <ul className="px-6 py-2 list-disc ">
-                <li>Weight: 20 kg</li>
-                <li>Height: 1.092</li>
-                <li>BMI: 16.80</li>
-                <li>
-                  Interpretation: <span className="text-C40BE04">NORMAL</span>
-                </li>
-              </ul>
-            </li>
+              );
+            })}
           </ul>
         </div>
       </section>

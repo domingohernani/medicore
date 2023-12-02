@@ -1,9 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 export default function addBMITracking() {
   const navigate = useNavigate();
+
+  // Value na kailangan i-aadd sa database
+  const [name, setName] = useState("");
+  const [birthdate, setBirthdate] = useState(Date());
+  const [age, setAge] = useState(0);
+  const [sex, setSex] = useState("Male");
+  const [placeOfBirth, setPlaceOfBirth] = useState("");
+  const [number, setNumber] = useState(0);
+  const [address, setAddress] = useState("");
+  const [mother, setMother] = useState("");
+  const [father, setFather] = useState("");
+  const [weight, setWeight] = useState(0);
+  const [height, setHeight] = useState(0);
+
   console.log("AddBMITracking was rendered");
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   return (
     <section className="w-9/12 mx-auto">
       <section className="p-3 text-center bg-white border rounded-lg border-C0076BE text-blue-950">
@@ -21,7 +43,9 @@ export default function addBMITracking() {
           <label className="font-semibold">Date</label>
           <input
             type="date"
-            className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+            className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950 text-center"
+            value={getCurrentDate()}
+            readOnly
           />
         </div>
         <div className="flex px-5 gap-7">
@@ -31,6 +55,7 @@ export default function addBMITracking() {
               type="text"
               placeholder="Enter child's name"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="flex flex-col">
@@ -38,6 +63,11 @@ export default function addBMITracking() {
             <input
               type="date"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => {
+                const selectedDate = new Date(e.target.value);
+                const formattedDate = selectedDate.toISOString().slice(0, 10);
+                setBirthdate(formattedDate);
+              }}
             />
           </div>
           <div className="flex flex-col">
@@ -45,13 +75,17 @@ export default function addBMITracking() {
             <input
               type="number"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setAge(e.target.value)}
             />
           </div>
         </div>
         <div className="flex px-5 gap-7">
           <div className="flex flex-col flex-1">
             <label className="font-semibold">Sex</label>
-            <select className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950">
+            <select
+              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setSex(e.target.value)}
+            >
               <option value="Male" key="male">
                 Male
               </option>
@@ -66,6 +100,7 @@ export default function addBMITracking() {
               type="text"
               placeholder="Enter child's place of birth"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setPlaceOfBirth(e.target.value)}
             />
           </div>
           <div className="flex flex-col">
@@ -73,6 +108,7 @@ export default function addBMITracking() {
             <input
               type="number"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setNumber(e.target.value)}
             />
           </div>
         </div>
@@ -82,6 +118,7 @@ export default function addBMITracking() {
             type="text"
             placeholder="Enter child address"
             className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+            onChange={(e) => setAddress(e.target.value)}
           />
         </div>
         <div className="flex gap-5 px-5">
@@ -90,6 +127,7 @@ export default function addBMITracking() {
             <input
               type="text"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setMother(e.target.value)}
             />
           </div>
           <div className="flex flex-col flex-1">
@@ -97,6 +135,7 @@ export default function addBMITracking() {
             <input
               type="text"
               className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              onChange={(e) => setFather(e.target.value)}
             />
           </div>
         </div>
@@ -107,6 +146,7 @@ export default function addBMITracking() {
               <input
                 type="number"
                 className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
+                onChange={(e) => setWeight(e.target.value)}
               />
               <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
                 KG
@@ -119,6 +159,7 @@ export default function addBMITracking() {
               <input
                 type="number"
                 className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
+                onChange={(e) => setHeight(e.target.value)}
               />
               <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
                 M
@@ -130,7 +171,18 @@ export default function addBMITracking() {
           <button
             className="flex-1 text-white"
             onClick={() => {
-              navigate("/bmitracking");
+              // navigate("/bmitracking");
+              console.log("Name:", name);
+              console.log("Birthdate:", birthdate);
+              console.log("Age:", age);
+              console.log("Sex:", sex);
+              console.log("Place of Birth:", placeOfBirth);
+              console.log("Number:", number);
+              console.log("Address:", address);
+              console.log("Mother:", mother);
+              console.log("Father:", father);
+              console.log("Weight:", weight);
+              console.log("Height:", height);
             }}
           >
             Add
@@ -140,7 +192,9 @@ export default function addBMITracking() {
             onClick={() => {
               navigate("/bmitracking");
             }}
-          >Cancel</button>
+          >
+            Cancel
+          </button>
         </div>
       </section>
     </section>

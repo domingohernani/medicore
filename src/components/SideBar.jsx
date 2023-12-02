@@ -31,7 +31,7 @@ export default function SideBar() {
   };
 
   return (
-    <section className="flex flex-col h-full gap-5 px-3 py-5 bg-white rounded-lg ">
+    <section className="flex flex-col h-full gap-5 px-5 py-5 bg-white rounded-lg ">
       <NavLink to={"/"} className={sideBarLinkColor}>
         <div className="flex items-center gap-2 px-3 py-3 rounded-lg ">
           <img src={dashboard} alt="" className="h-6 w-7" />
@@ -66,7 +66,7 @@ export default function SideBar() {
         <NavLink to={"/manageaccounts"} className={sideBarLinkColor}>
           <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
             <img src={manageaccount} alt="" className="w-6 h-6" />
-            <span className="font-medium">Manage Account</span>
+            <span className="font-medium">Accounts</span>
           </div>
         </NavLink>
       ) : null}
