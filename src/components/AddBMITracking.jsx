@@ -43,7 +43,7 @@ export default function addBMITracking() {
           <label className="font-semibold">Date</label>
           <input
             type="date"
-            className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950 text-center"
+            className="px-1 py-2 pl-3 text-center bg-white border rounded-lg border-blue-950"
             value={getCurrentDate()}
             readOnly
           />
@@ -162,7 +162,7 @@ export default function addBMITracking() {
                 onChange={(e) => setHeight(e.target.value)}
               />
               <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
-                M
+                CM
               </span>
             </div>
           </div>

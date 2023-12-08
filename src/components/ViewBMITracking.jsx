@@ -6,6 +6,7 @@ import axios from "axios";
 import editIcon from "../assets/bmitrackingassets/editIcon.svg";
 import cancelIcon from "../assets/bmitrackingassets/cancelIcon.svg";
 import applyIcon from "../assets/bmitrackingassets/applyIcon.svg";
+import Prescription from "./Prescription";
 
 export default function ViewBMITracking() {
   const [childDetails, setChildDetails] = useState({});
@@ -80,15 +81,42 @@ export default function ViewBMITracking() {
     setUpdateButtonClicked(!updateButtonClicked);
   };
 
-  const applyChanges = () => {
-    console.log("Name: " + name);
-    console.log("Gender: " + gender);
-    console.log("Birthdate: " + birthdate);
-    console.log("Place of Birth: " + placeofbirth);
-    console.log("Number: " + number);
-    console.log("Mother's Name: " + mothersname);
-    console.log("Father's Name: " + fathersname);
-    console.log("Address: " + address);
+  const applyChanges = async (childID) => {
+    try {
+      const response = await axios.put(
+        "http://localhost:8800/updateChildDetails",
+        {
+          name,
+          birthdate,
+          placeofbirth,
+          gender,
+          number,
+          mothersname,
+          fathersname,
+          address,
+          childID,
+        }
+      );
+      console.log(response);
+      if (response.data.reloadPage) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      const response = await axios.put("http://localhost:8800/updateParents", {
+        childID,
+        fathersname,
+        mothersname,
+      });
+      console.log(response);
+      if (response.data.reloadPage) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const capitalizeAfterSpace = (inputString) => {
@@ -117,7 +145,6 @@ export default function ViewBMITracking() {
     fetchChildDetails();
   }, [childId]);
 
-  // console.log("ViewBMITracking was rendered");
   return (
     <section>
       <div className="flex items-center justify-between gap-4">
@@ -157,7 +184,7 @@ export default function ViewBMITracking() {
                   width={"20px"}
                   className="cursor-pointer"
                   title="Apply changes"
-                  onClick={applyChanges}
+                  onClick={() => applyChanges(childDetails.child_id)}
                 />
                 <img
                   src={cancelIcon}
@@ -308,26 +335,26 @@ export default function ViewBMITracking() {
             {showStatusTag(childDetails.status)}
           </div>
         </div>
-        <div className="py-3 overflow-y-scroll text-center bg-white rounded-lg max-h-72 px-7">
-          <span>Prescription</span>
+        <div className="w-5/12 py-3 overflow-y-scroll text-sm text-center bg-white rounded-lg max-h-72 px-7">
+          <span className="text-base">Prescription</span>
           <hr className="my-4 prescriptionHr" />
           <ul className="text-left list-disc">
-            <li>Prutas, gulay, o supplement para sa resistensya.</li>
-            <li>Vitamin C: Mula sa prutas o supplement.</li>
-            <li>Prutas, gulay, o supplement para sa resistensya.</li>
-            <li>Vitamin C: Mula sa prutas o supplement.</li>
-            <li>Prutas, gulay, o supplement para sa resistensya.</li>
-            <li>Vitamin C: Mula sa prutas o supplement.</li>
-            <li>Prutas, gulay, o supplement para sa resistensya.</li>
-            <li>Vitamin C: Mula sa prutas o supplement.</li>
+            {bmiHistory.length > 0 ? (
+              <Prescription
+                height={bmiHistory[0].height}
+                weight={bmiHistory[0].weight}
+              ></Prescription>
+            ) : (
+              <span className="text-center">No BMI available</span>
+            )}
           </ul>
         </div>
       </section>
       <section className="flex gap-2 mt-3">
-        <div className="flex flex-col flex-1 gap-3 px-5 py-3 bg-white rounded-lg">
+        <div className="flex-1 gap-3 px-5 py-3 bg-white rounded-lg">
           <h4 className="text-blue-600">Medical History & Records</h4>
-          <hr className="flex-1" />
-          <ul className="px-8 py-2 text-left text-gray-500 list-disc bg-white rounded-lg medicalhistoryrecords ">
+          <hr className="flex-1 mt-3" />
+          <ul className="px-8 py-2 my-auto mt-4 text-left text-gray-500 list-disc rounded-lg medicalhistoryrecords">
             {historyRecords.map((record, index) => {
               return (
                 <li key={index}>
@@ -347,7 +374,7 @@ export default function ViewBMITracking() {
           <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg">
             BMI History
           </span>
-          <ul className="px-8 py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
+          <ul className="px-5 py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
             {bmiHistory.map((bmi, element) => {
               return (
                 <li key={element}>
