@@ -20,6 +20,15 @@ export default function SideBar() {
       : "bg-CEDEDED rounded-lg";
   };
 
+  const sideBarLinkColorImmu = ({ isActive }) => {
+    const urlPattern = /^\/(?:viewimmunization(?:\/\d+)?|immunization)$/;
+    if (location.pathname.match(urlPattern) || isActive) {
+      return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
+    } else {
+      return "bg-CEDEDED rounded-lg";
+    }
+  };
+
   const changeBgByUrl = ({ isActive }) => {
     const urlPattern =
       /^\/viewbmitracking(?:\/(?:addbmi|addmedicalhistory)\/\d+)?(?:\/\d+)?|\/addchildinfo$/;
@@ -50,7 +59,7 @@ export default function SideBar() {
           <span className="font-medium">BMI Tracking</span>
         </div>
       </NavLink>
-      <NavLink to={"/immunization"} className={sideBarLinkColor}>
+      <NavLink to={"/immunization"} className={sideBarLinkColorImmu}>
         <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
           <img src={immunization} alt="" className="w-6 h-6" />
           <span className="font-medium">Immunization</span>

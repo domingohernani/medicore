@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function AddMedicalHistory() {
   const { childId } = useParams();
+  const navigate = useNavigate();
+
   const [childDetails, setChildDetails] = useState({});
 
   const [heartrate, setHeartRate] = useState("");
@@ -53,8 +55,9 @@ export default function AddMedicalHistory() {
   const addButton = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:8800/viewbmitracking/${childId}`,
+        `http://localhost:8800/addHistoryAndRecord`,
         {
+          childId,
           heartrate,
           allergies,
           temperature,
@@ -67,11 +70,7 @@ export default function AddMedicalHistory() {
       console.log(error);
     }
 
-    console.log(heartrate);
-    console.log(allergies);
-    console.log(temperature);
-    console.log("Cold " + coldsValue);
-    console.log("Cough " + coughValue);
+    navigate("/viewbmitracking/" + childId);
   };
 
   return (
@@ -227,9 +226,7 @@ export default function AddMedicalHistory() {
                 name="cough"
                 value="Yes"
                 className="ml-1"
-                // Step 3: Attach onChange event handler
                 onChange={(e) => setCoughValue(e.target.value)}
-                // Step 2: Set checked based on state
                 checked={coughValue === "Yes"}
               />
             </span>
@@ -241,16 +238,13 @@ export default function AddMedicalHistory() {
                 name="cough"
                 value="No"
                 className="ml-1"
-                // Step 3: Attach onChange event handler
                 onChange={(e) => setCoughValue(e.target.value)}
-                // Step 2: Set checked based on state
                 checked={coughValue === "No"}
               />
             </span>
           </div>
           <div className="flex-1 text-center ">
             <span className="block">Colds:</span>
-
             <span className="mx-2">
               <label htmlFor="coldsYes">Yes</label>
               <input
@@ -282,7 +276,12 @@ export default function AddMedicalHistory() {
           <button className="flex-1 text-white" onClick={addButton}>
             Add
           </button>
-          <button className="flex-1 text-gray-500 bg-CEDEDED border-blue-950">
+          <button
+            className="flex-1 text-gray-500 bg-CEDEDED border-blue-950"
+            onClick={() => {
+              navigate("/viewbmitracking/" + childId);
+            }}
+          >
             Cancel
           </button>
         </div>

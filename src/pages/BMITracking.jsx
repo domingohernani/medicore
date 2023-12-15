@@ -10,6 +10,8 @@ export default function BMITracking() {
   console.log("BMI Tracking is rendered");
 
   const [statusModal, setStatusModal] = useState(false);
+  const [childId, setChildId] = useState();
+  const [status, setStatus] = useState();
   const [children, setChildren] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -86,7 +88,11 @@ export default function BMITracking() {
   return (
     <section>
       {statusModal && (
-        <Deactivation toggleDeactivationModal={toggleDeactivationModal} />
+        <Deactivation
+          toggleDeactivationModal={toggleDeactivationModal}
+          childId={childId}
+          status={status}
+        />
       )}
       <div className="flex items-center justify-center">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
@@ -139,13 +145,13 @@ export default function BMITracking() {
                 >
                   Inactive
                 </option>
-                <option
+                {/* <option
                   value="completed"
                   key="completed"
                   className="border-none outline-none"
                 >
                   Completed
-                </option>
+                </option> */}
               </select>
             </th>
           </tr>
@@ -165,7 +171,14 @@ export default function BMITracking() {
                   <td>{child.age}</td>
                   <td>{child.sex}</td>
                   <td>Zone {child.zone_number}</td>
-                  <td>{showStatusButton(child.status)}</td>
+                  <td
+                    onClick={() => {
+                      setChildId(child.child_id);
+                      setStatus(child.status);
+                    }}
+                  >
+                    {showStatusButton(child.status)}
+                  </td>
                   <td className="text-blue-600 underline cursor-pointer ">
                     <div className="flex items-center justify-center gap-2">
                       <img src={info} alt="" width={"20px"} />

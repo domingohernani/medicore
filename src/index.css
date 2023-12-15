@@ -100,3 +100,7 @@ th {
   background-color: white;
   font-size: smaller;
 }
+
+textarea {
+  resize: none;
+}

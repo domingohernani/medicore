@@ -64,8 +64,8 @@ function App() {
                   {/* Immunization */}
                   <Route path="/immunization" element={<Immunization />} />
                   <Route
-                    path="/viewimmunization/:id"
-                    element={<ViewImmunization />}
+                    path="/viewimmunization/:childId"
+                    element={<ViewImmunization />}                                                                              
                   />
                   <Route
                     path="/addimmunization"

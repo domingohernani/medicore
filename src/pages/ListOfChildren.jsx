@@ -24,7 +24,7 @@ export default function ListOfChildren() {
 
   return (
     <section>
-      <WelcomeBanner></WelcomeBanner>
+      {/* <WelcomeBanner></WelcomeBanner> */}
       <table className="w-full mt-3 bg-white border border-collapse rounded-lg table-auto">
         <thead>
           <tr className="my-5 text-center border-b">

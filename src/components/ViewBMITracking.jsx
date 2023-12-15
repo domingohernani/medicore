@@ -358,7 +358,11 @@ export default function ViewBMITracking() {
             {historyRecords.map((record, index) => {
               return (
                 <li key={index}>
-                  <span className="block">Date: {record.formatted_date}</span>
+                  <span className="block">
+                    Date:{" "}
+                    {new Date(record.history_date).toLocaleDateString("en-CA")}
+                  </span>
+
                   <span className="block">Allergies: {record.allergies}</span>
                   <span className="block">
                     Temperature: {record.temperature}

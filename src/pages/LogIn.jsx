@@ -7,9 +7,9 @@ export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   console.log("Login rendered");
-
 
   const handleLogin = async () => {
     try {
@@ -26,14 +26,15 @@ export default function Login() {
         console.error("Authentication failed");
       }
     } catch (error) {
-      console.error("Error during login:", error.message);
+      console.error("Authentication failed");
+      setShowAccessDenied(true);
     }
   };
 
   return (
-    <div className="flex flex-col w-screen h-screen bg-white left-0 top-0 absolute mx-auto">
+    <div className="absolute top-0 left-0 flex flex-col w-screen h-screen mx-auto bg-white">
       <div className="w-10/12 max-w-4xl mt-8 ml-9">
-        <h6>MediCore</h6>
+        <h6 className="font-bold">MediCore</h6>
         <p className="welcomeText">Barangay Child Health Monitoring System</p>
       </div>
       <div className="flex w-3/4 m-auto bg-white logInContainer h-3/4 max-w-7xl">
@@ -45,8 +46,8 @@ export default function Login() {
             className="m-auto"
           />
         </div>
-        <div className="flex flex-col w-3/4 px-12 py-10 justify-center gap-5">
-          <h3 className="mx-auto text-center text-2xl text-blue-800 loginHeader">
+        <div className="flex flex-col justify-center w-3/4 gap-5 px-12 py-10">
+          <h3 className="mx-auto text-2xl text-center text-blue-800 loginHeader">
             Please log in.
           </h3>
           <input
@@ -67,6 +68,11 @@ export default function Login() {
           >
             Log In
           </button>
+          {showAccessDenied ? (
+            <span className="text-red-600">
+              You've entered invalid username or password!{" "}
+            </span>
+          ) : null}
         </div>
       </div>
     </div>
