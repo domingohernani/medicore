@@ -14,6 +14,8 @@ export default function BMITracking() {
   const [status, setStatus] = useState();
   const [children, setChildren] = useState([]);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const handleFilterChange = async (event) => {
     if (event.target.value === "active") {
@@ -85,6 +87,56 @@ export default function BMITracking() {
     );
   };
 
+  const calculateBMI = (value1, value2) => {
+    const weightInKg = value1;
+    const heightInMeters = value2 / 100;
+    const bmi = (weightInKg / Math.pow(heightInMeters, 2)).toFixed(2);
+
+    const underweightRange = 18.5;
+    const normalRange = 24.9;
+    const overweightRange = 29.9;
+
+    let bmiCategory = "";
+
+    if (bmi < underweightRange) {
+      bmiCategory = "Underweight";
+    } else if (bmi <= normalRange) {
+      bmiCategory = "Normal";
+    } else if (bmi <= overweightRange) {
+      bmiCategory = "Overweight";
+    } else {
+      bmiCategory = "Obese";
+    }
+
+    return bmiCategory;
+  };
+
+  const handleSort = (property) => {
+    if (sortBy === property) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(property);
+      setSortOrder("asc");
+    }
+  };
+
+  const sortedChildren = [...children].sort((a, b) => {
+    if (sortBy === "name") {
+      return sortOrder === "asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+    } else if (sortBy === "age") {
+      const ageA = a.age_in_months;
+      const ageB = b.age_in_months;
+      return sortOrder === "asc" ? ageA - ageB : ageB - ageA;
+    } else if (sortBy === "sex") {
+      return sortOrder === "asc"
+        ? a.sex.localeCompare(b.sex)
+        : b.sex.localeCompare(a.sex);
+    }
+    return 0;
+  });
+
   return (
     <section>
       {statusModal && (
@@ -98,23 +150,34 @@ export default function BMITracking() {
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Body Mass Index Tracking
         </h3>
-        <div className="flex items-center flex-1 gap-2 ml-4">
+        <div className="flex items-center flex-1 gap-2 ml-4 ">
           <input
             type="text"
-            className="w-2/3 h-8 pl-3 rounded-lg bg-CD9D9D9"
+            className="w-9/12 h-8 pl-3 rounded-lg bg-CD9D9D9"
             placeholder="Search by name"
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
           <button className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg bg-C5FA9D6">
-            <img src={filter} alt="" width={"20px"} /> Sort
+            <img src={filter} alt="" width={"20px"} />
+            <select
+              className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg focus:outline-none bg-C5FA9D6"
+              onChange={(e) => {
+                handleSort(e.target.value);
+              }}
+            >
+              <option value={"child_id"}>Child ID</option>
+              <option value={"name"}>Name</option>
+              <option value={"age"}>Age</option>
+              <option value={"sex"}>Sex</option>
+            </select>
           </button>
         </div>
-        <NavLink to={"/addchildinfo"}>
+        {/* <NavLink to={"/addchildinfo"}>
           <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
             <img src={addIcon} alt="" width={"25px"} /> Add New
           </button>
-        </NavLink>
+        </NavLink> */}
       </div>
       <table className="w-full mt-3 bg-white border border-collapse rounded-lg table-auto">
         <thead>
@@ -123,7 +186,7 @@ export default function BMITracking() {
             <th>Name</th>
             <th>Age</th>
             <th>Sex</th>
-            <th>Zone</th>
+            <th>BMI Status</th>
             <th>Status</th>
             <th className="text-right">
               <label className="font-medium">Filter By: </label>
@@ -157,7 +220,7 @@ export default function BMITracking() {
           </tr>
         </thead>
         <tbody>
-          {children
+          {sortedChildren
             .filter((child) => {
               return search.toLowerCase() === ""
                 ? child
@@ -168,9 +231,11 @@ export default function BMITracking() {
                 <tr key={index}>
                   <td>CAB-UR-{child.child_id}</td>
                   <td>{child.name}</td>
-                  <td>{child.age}</td>
+                  {/* <td>{child.age}</td> */}
+                  <td>{child.age_in_months} month/s</td>
+                  
                   <td>{child.sex}</td>
-                  <td>Zone {child.zone_number}</td>
+                  <td> {calculateBMI(child.weight, child.height)}</td>
                   <td
                     onClick={() => {
                       setChildId(child.child_id);

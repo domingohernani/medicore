@@ -34,7 +34,7 @@ export default function Login() {
   return (
     <div className="absolute top-0 left-0 flex flex-col w-screen h-screen mx-auto bg-white">
       <div className="w-10/12 max-w-4xl mt-8 ml-9">
-        <h6 className="font-bold">MediCore</h6>
+        <h6 className="font-bold logo">MediCore</h6>
         <p className="welcomeText">Barangay Child Health Monitoring System</p>
       </div>
       <div className="flex w-3/4 m-auto bg-white logInContainer h-3/4 max-w-7xl">

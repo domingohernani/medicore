@@ -18,33 +18,45 @@ export default function ViewBMITracking() {
 
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
-  const [birthdate, setBirthdate] = useState("");
+  let [birthdate, setBirthdate] = useState("");
   const [placeofbirth, setPlaceofbirth] = useState("");
   const [number, setNumber] = useState("");
   const [mothersname, setMothersname] = useState("");
   const [fathersname, setFathersname] = useState("");
   const [address, setAddress] = useState("");
 
-  const calculateBMI = (value1, value2) => {
-    const weightInKg = value1;
-    const heightInMeters = value2 / 100;
+  const calculateBMI = (weightInKg, heightInCm, dateOfBirth, sex) => {
+    // Calculate age based on the current date and date of birth
+    const currentDate = new Date();
+    const birthDate = new Date(dateOfBirth);
+    const ageInMonths =
+      (currentDate.getFullYear() - birthDate.getFullYear()) * 12 +
+      currentDate.getMonth() -
+      birthDate.getMonth();
+
+    const heightInMeters = heightInCm / 100;
+
     const bmi = (weightInKg / Math.pow(heightInMeters, 2)).toFixed(2);
 
-    const underweightRange = 18.5;
-    const normalRange = 24.9;
-    const overweightRange = 29.9;
+    const bmiCategories = {
+      underweight: { upperLimit: 18.4, category: "Underweight" },
+      normal: { upperLimit: 24.9, category: "Normal" },
+      overweight: { upperLimit: 29.9, category: "Overweight" },
+      obese: { upperLimit: Number.POSITIVE_INFINITY, category: "Obese" },
+    };
 
-    let bmiCategory = "";
-
-    if (bmi < underweightRange) {
-      bmiCategory = "Underweight";
-    } else if (bmi <= normalRange) {
-      bmiCategory = "Normal";
-    } else if (bmi <= overweightRange) {
-      bmiCategory = "Overweight";
-    } else {
-      bmiCategory = "Obese";
+    if (sex === "Male" && ageInMonths >= 24) {
+      bmiCategories.underweight.upperLimit = 17.9;
+      bmiCategories.normal.upperLimit = 23.9;
+    } else if (sex === "Female" && ageInMonths >= 24) {
+      bmiCategories.underweight.upperLimit = 17.9;
+      bmiCategories.normal.upperLimit = 23.9;
     }
+
+    let bmiCategory = Object.keys(bmiCategories).find(
+      (category) => bmi <= bmiCategories[category].upperLimit
+    );
+    bmiCategory = bmiCategories[bmiCategory].category;
 
     return (
       <>
@@ -70,6 +82,10 @@ export default function ViewBMITracking() {
         className: "text-C869EAC",
         label: "Completed",
       },
+      Underimmunization: {
+        className: "text-gray",
+        label: "Underimmunization",
+      },
     };
 
     const config = statusConfig[status] || statusConfig.Completed;
@@ -81,10 +97,20 @@ export default function ViewBMITracking() {
     setUpdateButtonClicked(!updateButtonClicked);
   };
 
+  const formatDateForInput = (serverDate) => {
+    const date = new Date(serverDate);
+    const year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    let day = date.getDate().toString().padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
   const applyChanges = async (childID) => {
+    birthdate = formatDateForInput(birthdate);
     try {
       const response = await axios.put(
-        "http://localhost:8800/updateChildDetails",
+        "http://localhost:8800/updateChildDetailsFromImmu",
         {
           name,
           birthdate,
@@ -136,6 +162,15 @@ export default function ViewBMITracking() {
           `http://localhost:8800/viewbmitracking/${childId}`
         );
         setChildDetails(data.childDetails[0]);
+        setName(data.childDetails[0].name);
+        setGender(data.childDetails[0].sex);
+        setBirthdate(data.childDetails[0].date_of_birth);
+        setPlaceofbirth(data.childDetails[0].place_of_birth);
+        setNumber(data.childDetails[0].family_number);
+        setMothersname(data.childDetails[0].mother);
+        setFathersname(data.childDetails[0].father);
+        setAddress(data.childDetails[0].address);
+
         setBmiHistory(data.bmiHistory);
         setHistoryRecords(data.historyRecords);
       } catch (error) {
@@ -170,8 +205,8 @@ export default function ViewBMITracking() {
           </NavLink>
         </div>
       </div>
-      <section className="flex gap-3 mt-2">
-        <div className="grid grid-cols-4 gap-4 px-5 py-3 bg-white rounded-lg">
+      <section className="flex gap-3 mt-2 ">
+        <div className="grid flex-1 grid-cols-4 gap-4 px-5 py-3 bg-white rounded-lg">
           <span className="col-start-1 col-end-4 font-light">
             ID: CAB-UR-{childDetails.child_id}
           </span>
@@ -335,8 +370,8 @@ export default function ViewBMITracking() {
             {showStatusTag(childDetails.status)}
           </div>
         </div>
-        <div className="w-5/12 py-3 overflow-y-scroll text-sm text-center bg-white rounded-lg max-h-72 px-7">
-          <span className="text-base">Prescription</span>
+        <div className="pb-3 overflow-y-scroll text-center rounded-lg max-h-80">
+          {/* <span className="text-base">Prescription</span>
           <hr className="my-4 prescriptionHr" />
           <ul className="text-left list-disc">
             {bmiHistory.length > 0 ? (
@@ -347,35 +382,89 @@ export default function ViewBMITracking() {
             ) : (
               <span className="text-center">No BMI available</span>
             )}
-          </ul>
-        </div>
-      </section>
-      <section className="flex gap-2 mt-3">
-        <div className="flex-1 gap-3 px-5 py-3 bg-white rounded-lg">
-          <h4 className="text-blue-600">Medical History & Records</h4>
-          <hr className="flex-1 mt-3" />
-          <ul className="px-8 py-2 my-auto mt-4 text-left text-gray-500 list-disc rounded-lg medicalhistoryrecords">
-            {historyRecords.map((record, index) => {
-              return (
-                <li key={index}>
-                  <span className="block">
-                    Date:{" "}
-                    {new Date(record.history_date).toLocaleDateString("en-CA")}
-                  </span>
+          </ul> */}
 
-                  <span className="block">Allergies: {record.allergies}</span>
-                  <span className="block">
-                    Temperature: {record.temperature}
-                  </span>
-                  <span className="block">Coughs: {record.cough}</span>
-                  <span className="block">Colds: {record.cold}</span>
+          {/*  */}
+          <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg mr-7">
+            BMI History
+          </span>
+          <ul className="w-full py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
+            {bmiHistory.map((bmi, element) => {
+              return (
+                <li key={element}>
+                  <span>Date: {bmi.ht_date}</span>
+                  <ul className="px-10 py-2 ">
+                    <li>Weight: {bmi.weight} kg</li>
+                    <li>Height: {bmi.height} cm</li>
+                    {calculateBMI(bmi.weight, bmi.height)}
+                  </ul>
                 </li>
               );
             })}
           </ul>
         </div>
+      </section>
+      <section className="flex gap-2 mt-3">
+        <div className="flex-1 gap-3 rounded-lg">
+          <div className="px-4 py-3 text-gray-500 bg-white rounded-lg">
+            <span className="px-5 text-base text-blue-600">Prescription</span>
+            <hr className="my-4 bg-gray-100 prescriptionHr" />
+            <ul className="text-left list-disc px-9">
+              {bmiHistory.length > 0 ? (
+                <Prescription
+                  height={bmiHistory[0].height}
+                  weight={bmiHistory[0].weight}
+                ></Prescription>
+              ) : (
+                <span className="text-center">No BMI available</span>
+              )}
+            </ul>
+
+            {/*  */}
+          </div>
+          <div className="px-4 py-3 my-3 text-sm text-center bg-white rounded-lg ">
+            <h4 className="px-5 text-base text-left text-blue-600">
+              Medical History & Records
+            </h4>
+            <hr className="flex-1 mt-3" />
+            <ul className="px-8 py-2 my-auto mt-4 text-left text-gray-500 list-disc rounded-lg medicalhistoryrecords">
+              {historyRecords.map((record, index) => {
+                return (
+                  <li key={index}>
+                    <span className="block">
+                      Date:{" "}
+                      {new Date(record.history_date).toLocaleDateString(
+                        "en-CA"
+                      )}
+                    </span>
+
+                    <span className="block">Allergies: {record.allergies}</span>
+                    <span className="block">
+                      Temperature: {record.temperature}
+                    </span>
+                    <span className="block">Coughs: {record.cough}</span>
+                    <span className="block">Colds: {record.cold}</span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* <span className="text-base">Prescription</span>
+            <hr className="my-4 prescriptionHr" />
+            <ul className="text-left list-disc">
+              {bmiHistory.length > 0 ? (
+                <Prescription
+                  height={bmiHistory[0].height}
+                  weight={bmiHistory[0].weight}
+                ></Prescription>
+              ) : (
+                <span className="text-center">No BMI available</span>
+              )}
+            </ul> */}
+          </div>
+        </div>
         <div className="w-64 mx-1">
-          <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg">
+          {/* <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg">
             BMI History
           </span>
           <ul className="px-5 py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
@@ -391,7 +480,7 @@ export default function ViewBMITracking() {
                 </li>
               );
             })}
-          </ul>
+          </ul> */}
         </div>
       </section>
     </section>

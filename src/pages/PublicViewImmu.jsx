@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import editIcon from "../assets/bmitrackingassets/editIcon.svg";
 import applyIcon from "../assets/bmitrackingassets/applyIcon.svg";
 import cancelIcon from "../assets/bmitrackingassets/cancelIcon.svg";
-import UpdateImmunizationModal from "./modals/UpdateImmunizationModal";
-import EditImmunizationModal from "./modals/EditImmunizationModal";
+import { useNavigate } from "react-router-dom";
+
 
 export default function ViewImmunization() {
   const { childId } = useParams();
@@ -79,7 +78,7 @@ export default function ViewImmunization() {
   const triggerEdit = async () => {
     setEditImmuModal(!editImmuModal);
   };
-  
+  const navigate = useNavigate();
 
   // For updating
 
@@ -234,7 +233,7 @@ export default function ViewImmunization() {
   };
 
   return (
-    <section className="">
+    <section className="bg-white">
       {updateImmuModal && (
         <UpdateImmunizationModal onClose={triggerUpdate} childId={childId} />
       )}
@@ -242,9 +241,6 @@ export default function ViewImmunization() {
         <EditImmunizationModal onClose={triggerEdit} childId={childId} />
       )}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="px-6 py-2 font-semibold bg-white rounded-lg w-fit">
-          Child Immunization Records
-        </h3>
         <div className="flex gap-4">
           {/* <button
             className="flex items-center justify-center gap-2 px-6 bg-white border-2 border-black text-blue"
@@ -267,41 +263,30 @@ export default function ViewImmunization() {
 
             <span>Edit Record</span>
           </button> */}
-
-          <button
-            className="flex items-center justify-center gap-2 px-6 text-white"
-            onClick={triggerUpdate}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="16"
-              width="14"
-              viewBox="0 0 448 512"
-              fill="white"
-            >
-              <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z" />
-            </svg>
-            <span>Update Record</span>
-          </button>
         </div>
       </div>
       {/* </div> */}
 
-      <div className="grid grid-cols-4 gap-4 px-5 py-3 mb-3 bg-white rounded-lg">
+      <div className="mt-5 ml-5" onClick={()=>{
+         navigate("/enterId")
+      }}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="25"
+          width="25"
+          fill="black"
+          viewBox="0 0 512 512"
+        >
+          <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 288 480 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-370.7 0 73.4-73.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-128 128z" />
+        </svg>
+      </div>
+      <div className="gap-4 px-5 py-3 mb-3 bg-white rounded-lg ">
         <span className="col-start-1 col-end-4 font-light">
           ID: CAB-UR-{childDetails.child_id}
         </span>
         <span className="flex items-center justify-end col-start-4 col-end-4 gap-2 font-light ">
           {updateButtonClicked ? (
             <>
-              <img
-                src={applyIcon}
-                alt="icon"
-                width={"20px"}
-                className="cursor-pointer"
-                title="Apply changes"
-                onClick={() => applyChanges(childDetails.child_id)}
-              />
               <img
                 src={cancelIcon}
                 alt="icon"
@@ -312,142 +297,11 @@ export default function ViewImmunization() {
               />
             </>
           ) : null}
-          <img
-            src={editIcon}
-            alt="icon"
-            width={"18px"}
-            className="cursor-pointer"
-            onClick={updateRecord}
-          />
         </span>
-        <div className="flex flex-col ">
-          <span>Name</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              placeholder={childDetails.name}
-              className="font-bold"
-              value={name}
-              onChange={(e) => setName(capitalizeAfterSpace(e.target.value))}
-            />
-          ) : (
-            <span className="font-bold">{childDetails.name}</span>
-          )}
-        </div>
         <div className="flex flex-col">
-          <span>Age</span>
-          <span className="font-bold">{childDetails.age}</span>
-        </div>
-        <div className="flex flex-col">
-          <span>Gender</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              placeholder={childDetails.sex}
-              className="font-bold"
-              value={gender}
-              onChange={(e) => setGender(capitalizeAfterSpace(e.target.value))}
-            />
-          ) : (
-            <span className="font-bold">{childDetails.sex}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <span>Birthdate</span>
-          {updateButtonClicked ? (
-            <input
-              type="date"
-              // value={birthdate}
-              value={birthdate}
-              onChange={(e) => {
-                formatDateForInput(e.target.value);
-                setBirthdate(e.target.value);
-              }}
-            />
-          ) : (
-            <span className="font-bold">{childDetails.date_of_birth}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <span>Place of birth</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              placeholder={childDetails.place_of_birth}
-              className="font-bold"
-              value={placeofbirth}
-              onChange={(e) =>
-                setPlaceofbirth(capitalizeAfterSpace(e.target.value))
-              }
-            />
-          ) : (
-            <span className="font-bold">{childDetails.place_of_birth}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <span>Contact no.</span>
-          {updateButtonClicked ? (
-            <input
-              type="number"
-              placeholder={childDetails.family_number}
-              className="font-bold"
-              value={number}
-              onChange={(e) => setNumber(capitalizeAfterSpace(e.target.value))}
-            />
-          ) : (
-            <span className="font-bold">{childDetails.family_number}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <span>Mother's Name</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              className="font-bold"
-              placeholder={childDetails.mother}
-              value={mothersname}
-              onChange={(e) =>
-                setMothersname(capitalizeAfterSpace(e.target.value))
-              }
-            />
-          ) : (
-            <span className="font-bold">{childDetails.mother}</span>
-          )}
-        </div>
-        <div className="flex flex-col">
-          <span>Father's Name</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              className="font-bold"
-              placeholder={childDetails.father}
-              value={fathersname}
-              onChange={(e) =>
-                setFathersname(capitalizeAfterSpace(e.target.value))
-              }
-            />
-          ) : (
-            <span className="font-bold">{childDetails.father}</span>
-          )}
-        </div>
-        <div className="flex flex-col col-span-3 ">
-          <span>Address</span>
-          {updateButtonClicked ? (
-            <input
-              type="text"
-              className="font-bold"
-              placeholder={childDetails.address}
-              value={address}
-              onChange={(e) => setAddress(capitalizeAfterSpace(e.target.value))}
-            />
-          ) : (
-            <span className="font-bold">{childDetails.address}</span>
-          )}
-        </div>
-        <div className="">
-          <span>Status: </span>
-          {showStatusTag(childDetails.status)}
-          {/* <span>{childDetails.status}</span> */}
+          <span>
+            Name: <span className="font-bold"> {childDetails.name}</span>
+          </span>
         </div>
       </div>
 

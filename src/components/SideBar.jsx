@@ -29,9 +29,18 @@ export default function SideBar() {
     }
   };
 
+  const sideBarLinkColorListOfChild = ({ isActive }) => {
+    const urlPattern = /^\/addchildinfo$/;
+    if (location.pathname.match(urlPattern) || isActive) {
+      return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
+    } else {
+      return "bg-CEDEDED rounded-lg";
+    }
+  };
+
   const changeBgByUrl = ({ isActive }) => {
     const urlPattern =
-      /^\/viewbmitracking(?:\/(?:addbmi|addmedicalhistory)\/\d+)?(?:\/\d+)?|\/addchildinfo$/;
+      /^\/viewbmitracking(?:\/(?:addbmi|addmedicalhistory)\/\d+)?(?:\/\d+)?|\$/;
     if (location.pathname.match(urlPattern) || isActive) {
       return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
     } else {
@@ -47,7 +56,7 @@ export default function SideBar() {
           <span className="font-medium">Dashboard</span>
         </div>
       </NavLink>
-      <NavLink to={"/listofchildren"} className={sideBarLinkColor}>
+      <NavLink to={"/listofchildren"} className={sideBarLinkColorListOfChild}>
         <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
           <img src={listofchildren} alt="" className="w-6 h-6" />
           <span className="font-medium">List of children</span>

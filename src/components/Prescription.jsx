@@ -88,8 +88,8 @@ export default function Prescription({ height, weight }) {
 
   return (
     <>
-      <li>{prescribeUsingBMI()}</li>
-      <li>{prescribeUsingSeason()}</li>
+      <li className="text-justify text-black">{prescribeUsingBMI()}</li>
+      {/* <li>{prescribeUsingSeason()}</li> */}
     </>
   );
 }
