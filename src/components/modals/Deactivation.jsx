@@ -75,7 +75,7 @@ export default function Deactivation({
 
   return ReactDOM.createPortal(
     <section
-      className="absolute flex items-center justify-center w-full h-full bg-opacity-50 alertModal bg-CD9D9D9"
+      className="fixed flex items-center justify-center w-full h-full bg-opacity-50 alertModal bg-CD9D9D9"
       id="deactivationModal"
     >
       {/* {showModal ? (

@@ -3,10 +3,9 @@ import { useEffect } from "react";
 import WelcomeIllustration from "../assets/dashboardassets/welcomeillustration.svg";
 import WelcomeBanner from "../components/WelcomeBanner";
 // import dashboard from "../assets/dashboardassets/dashboard.svg"
-import { Doughnut } from "react-chartjs-2";
 import graph from "../assets/bmi.svg";
 import axios from "axios";
-
+import WineProductionChart from "../components/WineProductionChart ";
 
 export default function Dashboard() {
   const [actives, setActives] = useState(0);
@@ -16,9 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchAllActive = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8800/activeBMI"
-        );
+        const response = await axios.get("http://localhost:8800/activeBMI");
         console.log(response.data.length);
         setActives(response.data.length);
       } catch (error) {
@@ -44,7 +41,6 @@ export default function Dashboard() {
     fetchAllActive();
   }, []);
 
-
   return (
     <>
       <WelcomeBanner></WelcomeBanner>
@@ -62,7 +58,7 @@ export default function Dashboard() {
           <p>Total number of children with complete immunization</p>
         </div>
       </div>
-      <img src={graph} alt="" width="100%" />
+      <WineProductionChart></WineProductionChart>
 
       {/* <div>
       <Doughnut />

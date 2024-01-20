@@ -10,8 +10,12 @@ export default function EnterId() {
     const regex = /^CAB-UR-\d+$/;
 
     if (!regex.test(id)) {
-        alert("Please enter a valid id in the format CAB-UR-{digit}");
-        return;
+      Swal.fire({
+        icon: "error",
+        title: "Invalid ID Format",
+        text: "Please enter a valid ID in the format CAB-UR-{digit}",
+      });
+      return;
     }
     console.log(id);
     try {
@@ -19,12 +23,15 @@ export default function EnterId() {
         `http://localhost:8800/getAllChild/${id}`
       );
       console.log(response);
-        if (response.data.length === 0) {
-            alert("No child was found. Please check the ID")
-            return
-        }
-        navigate(`/publicviewImmu/${response.data[0].child_id}`)
-
+      if (response.data.length === 0) {
+        Swal.fire({
+          icon: "error",
+          title: "No child was found.",
+          text: "Please check the ID.",
+        });
+        return;
+      }
+      navigate(`/publicviewImmu/${response.data[0].child_id}`);
     } catch (error) {
       console.error("Error fetching child data:", error);
     }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import Swal from "sweetalert2";
 
 export default function UpdateImmunizationModal({ onClose, childId }) {
   const [selectedVaccine, setSelectedVaccine] = useState("BCG Vaccine");
@@ -41,7 +42,6 @@ export default function UpdateImmunizationModal({ onClose, childId }) {
       console.log(response.data[0]);
       setDoseLeft(response.data[0].dose_left);
       setDoseTaken(response.data[0].dose_taken);
-      
     } catch (error) {
       console.log(error);
     }
@@ -57,9 +57,11 @@ export default function UpdateImmunizationModal({ onClose, childId }) {
       date === undefined ||
       doseValid === false
     ) {
-      window.alert(
-        "Oops! It looks like there's an issue with the input. Please check and try again."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "It looks like there's an issue with the input. Please check and try again.",
+      });
     } else {
       onClose();
       try {
@@ -78,6 +80,12 @@ export default function UpdateImmunizationModal({ onClose, childId }) {
         console.log(error);
       }
     }
+  };
+
+  const getMaxDate = () => {
+    const currentDate = new Date();
+    const formattedMaxDate = currentDate.toISOString().split("T")[0];
+    return formattedMaxDate;
   };
 
   return ReactDOM.createPortal(
@@ -148,24 +156,29 @@ export default function UpdateImmunizationModal({ onClose, childId }) {
               type="date"
               className="w-full px-2 py-3 border-2 rounded-lg"
               value={date}
+              max={getMaxDate()}
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
-          <div className="flex-1">
+          <div className="flex flex-col items-center flex-1">
             <label>Dose Taken: </label>
-            <select
+            {/* <select
               className="w-full px-2 py-3 text-center border-2 rounded-lg"
               value={doses}
               onChange={(e) => setDoses(e.target.value)}
-            >
-              {doseLeft !== 0 ? (
-                <option value={doseTaken}> {doseTaken}</option>
-              ) : (
-                <option value="maximumReached">
-                  Required Doses Have Been Reached
-                </option>
-              )}
-            </select>
+            > */}
+            {doseLeft !== 0 ? (
+              <span className="mt-2 text-center">{doseTaken}</span>
+            ) : (
+              // <input type="text" value=/>
+              // <option value={doseTaken}> {doseTaken}</option>
+              // <option value="maximumReached">
+              <span className="mt-2 text-center">
+                Required Doses Have Been Reached
+              </span>
+              // </option>
+            )}
+            {/* </select> */}
           </div>
         </div>
 

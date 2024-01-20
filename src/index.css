@@ -92,8 +92,6 @@ th {
   margin: 0 0 1rem 0;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
 
 .bmiHistory > li {
@@ -115,4 +113,21 @@ textarea {
 }
 .logoPublic {
   font-size: 3rem;
+}
+
+
+.reminderScreen {
+  height: 36rem;
+  position: fixed;
+  width: 80vw;
+}
+
+.textInputMessage {
+  width: 67rem;
+}
+
+.bg {
+  background-position: center;
+  position: fixed;
+  z-index: -30;
 }

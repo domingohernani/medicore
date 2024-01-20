@@ -197,6 +197,17 @@ export default function AddBMI() {
           <button
             className="flex-1 text-white"
             onClick={async () => {
+              if (!weight || !height) {
+                Swal.fire({
+                  icon: "warning",
+                  title: "Incomplete Form",
+                  text: "Please fill in all the required fields before submitting the form.",
+                  confirmButtonColor: "#3085d6",
+                  confirmButtonText: "OK",
+                });
+                return;
+              }
+
               try {
                 const response = await axios.post(
                   `http://localhost:8800/addBMIRecord/${childId}`,

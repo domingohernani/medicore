@@ -25,6 +25,8 @@ export default function ViewImmunization() {
   const [number, setNumber] = useState("");
   const [mothersname, setMothersname] = useState("");
   const [fathersname, setFathersname] = useState("");
+  const [mothersNo, setMothersNo] = useState("");
+  const [fathersNo, setFathersNo] = useState("");
   const [address, setAddress] = useState("");
 
   const [BCGVaccine, setBCGVaccine] = useState([]);
@@ -79,7 +81,6 @@ export default function ViewImmunization() {
   const triggerEdit = async () => {
     setEditImmuModal(!editImmuModal);
   };
-  
 
   // For updating
 
@@ -95,7 +96,6 @@ export default function ViewImmunization() {
           birthdate,
           placeofbirth,
           gender,
-          number,
           mothersname,
           fathersname,
           address,
@@ -113,7 +113,9 @@ export default function ViewImmunization() {
       const response = await axios.put("http://localhost:8800/updateParents", {
         childID,
         fathersname,
+        fathersNo,
         mothersname,
+        mothersNo,
       });
       console.log(response);
       if (response.data.reloadPage) {
@@ -140,6 +142,9 @@ export default function ViewImmunization() {
         setMothersname(response.data.childDetails[0].mother);
         setFathersname(response.data.childDetails[0].father);
         setAddress(response.data.childDetails[0].address);
+        setFathersNo(response.data.childDetails[0].father_phoneNo);
+        setMothersNo(response.data.childDetails[0].mother_phoneNo);
+
         // console.log(response.data.childDetails[0]);
 
         const response1 = await axios.get(
@@ -355,20 +360,21 @@ export default function ViewImmunization() {
         <div className="flex flex-col">
           <span>Birthdate</span>
           {updateButtonClicked ? (
-            <input
-              type="date"
-              // value={birthdate}
-              value={birthdate}
-              onChange={(e) => {
-                formatDateForInput(e.target.value);
-                setBirthdate(e.target.value);
-              }}
-            />
+            // <input
+            //   type="date"
+            //   // value={birthdate}
+            //   value={birthdate}
+            //   onChange={(e) => {
+            //     formatDateForInput(e.target.value);
+            //     setBirthdate(e.target.value);
+            //   }}
+            // />
+            <span className="font-bold">{childDetails.date_of_birth}</span>
           ) : (
             <span className="font-bold">{childDetails.date_of_birth}</span>
           )}
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2">
           <span>Place of birth</span>
           {updateButtonClicked ? (
             <input
@@ -384,18 +390,18 @@ export default function ViewImmunization() {
             <span className="font-bold">{childDetails.place_of_birth}</span>
           )}
         </div>
-        <div className="flex flex-col">
-          <span>Contact no.</span>
+        <div className="flex flex-col col-start-3 col-span-2">
+          <span>Address</span>
           {updateButtonClicked ? (
             <input
-              type="number"
-              placeholder={childDetails.family_number}
+              type="text"
               className="font-bold"
-              value={number}
-              onChange={(e) => setNumber(capitalizeAfterSpace(e.target.value))}
+              placeholder={childDetails.address}
+              value={address}
+              onChange={(e) => setAddress(capitalizeAfterSpace(e.target.value))}
             />
           ) : (
-            <span className="font-bold">{childDetails.family_number}</span>
+            <span className="font-bold">{childDetails.address}</span>
           )}
         </div>
         <div className="flex flex-col">
@@ -415,6 +421,27 @@ export default function ViewImmunization() {
           )}
         </div>
         <div className="flex flex-col">
+          <span>Mother's No.</span>
+          {updateButtonClicked ? (
+            <input
+              type="text"
+              className="font-bold"
+              placeholder={childDetails.mother_phoneNo}
+              value={mothersNo}
+              maxLength="11"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+                  .slice(0, 11);
+                setMothersNo(e.target.value);
+              }}
+            />
+          ) : (
+            <span className="font-bold">{childDetails.mother_phoneNo}</span>
+          )}
+        </div>
+        <div className="flex flex-col">
           <span>Father's Name</span>
           {updateButtonClicked ? (
             <input
@@ -430,20 +457,28 @@ export default function ViewImmunization() {
             <span className="font-bold">{childDetails.father}</span>
           )}
         </div>
-        <div className="flex flex-col col-span-3 ">
-          <span>Address</span>
+        <div className="flex flex-col">
+          <span>Father's No.</span>
           {updateButtonClicked ? (
             <input
               type="text"
               className="font-bold"
-              placeholder={childDetails.address}
-              value={address}
-              onChange={(e) => setAddress(capitalizeAfterSpace(e.target.value))}
+              placeholder={childDetails.father_phoneNo}
+              value={fathersNo}
+              maxLength="11"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                e.target.value = e.target.value
+                  .replace(/[^0-9]/g, "")
+                  .slice(0, 11);
+                setFathersNo(e.target.value); // Corrected from setMothersNo to setFathersNo
+              }}
             />
           ) : (
-            <span className="font-bold">{childDetails.address}</span>
+            <span className="font-bold">{childDetails.father_phoneNo}</span>
           )}
         </div>
+
         <div className="">
           <span>Status: </span>
           {showStatusTag(childDetails.status)}

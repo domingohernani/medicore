@@ -12,13 +12,16 @@ import ViewBMITracking from "./components/ViewBMITracking";
 import ViewImmunization from "./components/ViewImmunization";
 import AddImmunization from "./components/AddImmunization";
 import AddBMI from "./components/AddBMI";
-import LogIn from "./pages/Login";
+import LogIn from "./pages/LogIn";
 import AddMedicalHistory from "./components/AddMedicalHistory";
 import ManageAccounts from "./pages/ManageAccounts";
 import RemindersView from "./components/ReminderView";
 import PublicViewing from "./pages/publicViewing";
 import EnterId from "./pages/EnterId";
 import PublicViewImmu from "./pages/PublicViewImmu";
+import AddAdmin from "./components/AddAdmin";
+import ViewMessage from "./components/ViewMessage";
+import AddMessage from "./components/modals/AddMessage";
 
 const isAdmin = () => {
   return localStorage.getItem("role") === "president" ? true : false;
@@ -38,7 +41,7 @@ function App() {
           path="/*"
           element={
             <>
-              <section className="fixed w-full">
+              <section className="fixed z-40 w-full">
                 <NavBar />
               </section>
               <section className="fixed h-screen ml-4 w-fit top-20">
@@ -74,14 +77,22 @@ function App() {
                     element={<AddImmunization />}
                   />
                   <Route path="/reminders" element={<Reminders />} />
+                  <Route path="/addMessage" element={<AddMessage />} />
                   <Route path="/remindersView" element={<RemindersView />} />
+                  <Route
+                    path="/viewMessages/:parentID/:childID"
+                    element={<ViewMessage />}
+                  />
 
                   {/* Manage Accounts */}
                   {isAdmin() ? (
-                    <Route
-                      path="/manageaccounts"
-                      element={<ManageAccounts />}
-                    />
+                    <>
+                      <Route
+                        path="/manageaccounts"
+                        element={<ManageAccounts />}
+                      />
+                      <Route path="/addadmin" element={<AddAdmin />} />
+                    </>
                   ) : null}
                 </Routes>
               </section>

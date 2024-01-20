@@ -47,6 +47,32 @@ export default function SideBar() {
       return "bg-CEDEDED rounded-lg";
     }
   };
+  const changeBgByUrlAdmin = ({ isActive }) => {
+    const urlPattern = /^\/addadmin$/;
+    if (location.pathname.match(urlPattern) || isActive) {
+      return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
+    } else {
+      return "bg-CEDEDED rounded-lg";
+    }
+  };
+
+  const changeColor = ({ isActive }) => {
+    const urlPatterns = [
+      /^\/reminders$/,
+      /^\/viewMessages\/\d+$/,
+      /^\/remindersView$/,
+    ];
+
+    const isMatchingPattern = urlPatterns.some((pattern) =>
+      location.pathname.match(pattern)
+    );
+
+    if (isMatchingPattern || isActive) {
+      return "outline outline-2 outline-C0076BE rounded-lg bg-C0076BE/25";
+    } else {
+      return "bg-CEDEDED rounded-lg";
+    }
+  };
 
   return (
     <section className="flex flex-col h-full gap-5 px-5 py-5 bg-white rounded-lg ">
@@ -74,14 +100,14 @@ export default function SideBar() {
           <span className="font-medium">Immunization</span>
         </div>
       </NavLink>
-      <NavLink to={"/reminders"} className={sideBarLinkColor}>
+      <NavLink to={"/reminders"} className={changeColor}>
         <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
           <img src={reminders} alt="" className="w-6 h-6" />
           <span className="font-medium">Reminders</span>
         </div>
       </NavLink>
       {isAdmin() ? (
-        <NavLink to={"/manageaccounts"} className={sideBarLinkColor}>
+        <NavLink to={"/manageaccounts"} className={changeBgByUrlAdmin}>
           <div className="flex items-center gap-2 px-3 py-3 rounded-lg">
             <img src={manageaccount} alt="" className="w-6 h-6" />
             <span className="font-medium">Accounts</span>

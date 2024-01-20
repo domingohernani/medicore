@@ -23,7 +23,11 @@ export default function ViewBMITracking() {
   const [number, setNumber] = useState("");
   const [mothersname, setMothersname] = useState("");
   const [fathersname, setFathersname] = useState("");
+  const [mothersNo, setMothersNo] = useState("");
+  const [fathersNo, setFathersNo] = useState("");
   const [address, setAddress] = useState("");
+  const [medicineTaken, setMedicineTaken] = useState([]);
+  let [medicinePrescription, setMedicinePrescription] = useState([]);
 
   const calculateBMI = (weightInKg, heightInCm, dateOfBirth, sex) => {
     // Calculate age based on the current date and date of birth
@@ -60,9 +64,12 @@ export default function ViewBMITracking() {
 
     return (
       <>
-        <li>BMI: {bmi}</li>
         <li>
-          Interpretation: <span className="text-C40BE04">{bmiCategory}</span>
+          <span className="font-semibold">BMI:</span> {bmi}
+        </li>
+        <li>
+          <span className="font-semibold">Interpretation:</span>{" "}
+          <span className="text-C40BE04">{bmiCategory}</span>
         </li>
       </>
     );
@@ -116,7 +123,6 @@ export default function ViewBMITracking() {
           birthdate,
           placeofbirth,
           gender,
-          number,
           mothersname,
           fathersname,
           address,
@@ -134,7 +140,9 @@ export default function ViewBMITracking() {
       const response = await axios.put("http://localhost:8800/updateParents", {
         childID,
         fathersname,
+        fathersNo,
         mothersname,
+        mothersNo,
       });
       console.log(response);
       if (response.data.reloadPage) {
@@ -155,12 +163,57 @@ export default function ViewBMITracking() {
     return resultString;
   };
 
+  const prescribeUsingMedicines = () => {
+    let prescription = [];
+
+    const getPrescriptionText = (vaccineName, occurrenceCount) => {
+      switch (vaccineName) {
+        case "BCG Vaccine":
+          return occurrenceCount > 0
+            ? "Siya ay may mababang tsansa na mahawaan ng ilang uri ng tuberculosis (TB)"
+            : "Mataas ang panganib na mahawaan siya ng ilang uri ng tuberculosis (TB)";
+        case "Hepatitis B Vaccine":
+          return occurrenceCount > 0
+            ? "Protektado ang bata sa Hepatitis B, na maaaring magdulot ng seryosong problema sa atay"
+            : "May panganib na mahawa siya ng Hepatitis B virus kung sakaling magkaruon siya ng contact sa isang taong may sakit";
+        case "Inactivated Polio Vaccine (PIV)":
+          return occurrenceCount >= 2
+            ? "Mataas ang immune response ng bata laban sa polio"
+            : "Delekado ang situation ng bata. Maari siyang mahawala ng polio, isang nakakahawang sakit na maaaring magdulot ng paralysis";
+        case "Measles, Mumps, Rubella Vaccine (MMR)":
+          return occurrenceCount > 0
+            ? "Mataas proteksyon laban sa tigdas, bulutong, at rubella, na nagpapababa ng panganib na magkaruon ng mga malubhang sakit at komplikasyon"
+            : "Mataas ang tsansang mahawa ang bata sa tigdas, bulutong, at rubella";
+        case "Pentavalent Vaccine (DPT-Hep B-HIB)":
+          return occurrenceCount > 0
+            ? "Protektado laban sa diphtheria, pertussis, tetanus, Hepatitis B, at Haemophilus influenzae type b (HIB). Pangmatagalan at komprehensibong proteksyon laban sa mga nabanggit na sakit."
+            : "Ang bata ay maaaring mas madaling matamaan ng diphtheria, pertussis, tetanus, Hepatitis B, at Haemophilus influenzae type b (HIB)";
+        case "Pneumococcal Conjugate Vaccine (PCV)":
+          return occurrenceCount > 0
+            ? "Protektado laban sa ilang uri ng bacteria na sanhi ng pneumonia, meningitis, at iba pang respiratory infections"
+            : "Mataas ang panganib na mahawaan ng mga sakit na dulot ng pneumococcus, na maaaring magresulta sa pneumonia, meningitis, o iba pang respiratory infections na maaaring magdulot ng komplikasyon at kritikal na kondisyon";
+        default:
+          return "";
+      }
+    };
+
+    medicineTaken.forEach((vaccine) => {
+      const text = getPrescriptionText(vaccine.name, vaccine.occurrence_count);
+      prescription.push(text);
+    });
+
+    setMedicinePrescription(prescription);
+  };
+
   useEffect(() => {
-    const fetchChildDetails = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:8800/viewbmitracking/${childId}`
-        );
+        const [childDetailsResponse, medicineResponse] = await Promise.all([
+          axios.get(`http://localhost:8800/viewbmitracking/${childId}`),
+          axios.get(`http://localhost:8800/prescribeMedicines/${childId}`),
+        ]);
+
+        const { data } = childDetailsResponse;
         setChildDetails(data.childDetails[0]);
         setName(data.childDetails[0].name);
         setGender(data.childDetails[0].sex);
@@ -170,15 +223,21 @@ export default function ViewBMITracking() {
         setMothersname(data.childDetails[0].mother);
         setFathersname(data.childDetails[0].father);
         setAddress(data.childDetails[0].address);
+        setFathersNo(data.childDetails[0].father_phoneNo);
+        setMothersNo(data.childDetails[0].mother_phoneNo);
 
         setBmiHistory(data.bmiHistory);
         setHistoryRecords(data.historyRecords);
+
+        setMedicineTaken(medicineResponse.data);
+        prescribeUsingMedicines();
       } catch (error) {
         console.log(error);
       }
     };
-    fetchChildDetails();
-  }, [childId]);
+
+    fetchData();
+  }, [childId, medicinePrescription]);
 
   return (
     <section>
@@ -276,16 +335,17 @@ export default function ViewBMITracking() {
           <div className="flex flex-col">
             <span>Birthdate</span>
             {updateButtonClicked ? (
-              <input
-                type="date"
-                value={birthdate}
-                onChange={(e) => setBirthdate(e.target.value)}
-              />
+              // <input
+              //   type="date"
+              //   value={birthdate}
+              //   onChange={(e) => setBirthdate(e.target.value)}
+              // />
+              <span className="font-bold">{childDetails.date_of_birth}</span>
             ) : (
               <span className="font-bold">{childDetails.date_of_birth}</span>
             )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col col-span-2">
             <span>Place of birth</span>
             {updateButtonClicked ? (
               <input
@@ -301,20 +361,20 @@ export default function ViewBMITracking() {
               <span className="font-bold">{childDetails.place_of_birth}</span>
             )}
           </div>
-          <div className="flex flex-col">
-            <span>Contact no.</span>
+          <div className="flex flex-col col-start-3 col-span-2 ">
+            <span>Address</span>
             {updateButtonClicked ? (
               <input
-                type="number"
-                placeholder={childDetails.family_number}
+                type="text"
                 className="font-bold"
-                value={number}
+                placeholder={childDetails.address}
+                value={address}
                 onChange={(e) =>
-                  setNumber(capitalizeAfterSpace(e.target.value))
+                  setAddress(capitalizeAfterSpace(e.target.value))
                 }
               />
             ) : (
-              <span className="font-bold">{childDetails.family_number}</span>
+              <span className="font-bold">{childDetails.address}</span>
             )}
           </div>
           <div className="flex flex-col">
@@ -334,6 +394,27 @@ export default function ViewBMITracking() {
             )}
           </div>
           <div className="flex flex-col">
+            <span>Mother's No.</span>
+            {updateButtonClicked ? (
+              <input
+                type="text"
+                className="font-bold"
+                placeholder={childDetails.mother_phoneNo}
+                value={mothersNo}
+                maxLength="11"
+                pattern="[0-9]*"
+                onChange={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                    .slice(0, 11);
+                  setMothersNo(e.target.value);
+                }}
+              />
+            ) : (
+              <span className="font-bold">{childDetails.mother_phoneNo}</span>
+            )}
+          </div>
+          <div className="flex flex-col">
             <span>Father's Name</span>
             {updateButtonClicked ? (
               <input
@@ -349,20 +430,26 @@ export default function ViewBMITracking() {
               <span className="font-bold">{childDetails.father}</span>
             )}
           </div>
-          <div className="flex flex-col col-span-3 ">
-            <span>Address</span>
+          <div className="flex flex-col">
+            <span>Father's No.</span>
             {updateButtonClicked ? (
               <input
                 type="text"
                 className="font-bold"
-                placeholder={childDetails.address}
-                value={address}
-                onChange={(e) =>
-                  setAddress(capitalizeAfterSpace(e.target.value))
-                }
+                placeholder={childDetails.father_phoneNo}
+                value={fathersNo}
+                maxLength="11"
+                pattern="[0-9]*"
+                onChange={(e) => {
+                  // Ensure only numeric input and limit to 11 characters
+                  e.target.value = e.target.value
+                    .replace(/[^0-9]/g, "")
+                    .slice(0, 11);
+                  setFathersNo(e.target.value); // Corrected from setMothersNo to setFathersNo
+                }}
               />
             ) : (
-              <span className="font-bold">{childDetails.address}</span>
+              <span className="font-bold">{childDetails.father_phoneNo} </span>
             )}
           </div>
           <div className="">
@@ -370,37 +457,44 @@ export default function ViewBMITracking() {
             {showStatusTag(childDetails.status)}
           </div>
         </div>
-        <div className="pb-3 overflow-y-scroll text-center rounded-lg max-h-80">
-          {/* <span className="text-base">Prescription</span>
-          <hr className="my-4 prescriptionHr" />
-          <ul className="text-left list-disc">
-            {bmiHistory.length > 0 ? (
-              <Prescription
-                height={bmiHistory[0].height}
-                weight={bmiHistory[0].weight}
-              ></Prescription>
+        <div className="pb-3 text-center rounded-lg max-h-80">
+          <h4 className="py-4 px-4 text-base text-center text-blue-600 bg-white rounded-md">
+            Medical History & Records
+          </h4>
+          <ul className="py-2 my-auto mt-4 ml-1 text-left text-black bg-white border-2 rounded-lg px-9 medicalhistoryrecords">
+            {historyRecords.length === 0 ? (
+              <span className="text-gray-500">No records</span>
             ) : (
-              <span className="text-center">No BMI available</span>
-            )}
-          </ul> */}
+              historyRecords.map((record, index) => {
+                return (
+                  <li key={index}>
+                    <span className="block">
+                      <span className="font-semibold">Date: </span>
+                      {new Date(record.history_date).toLocaleDateString(
+                        "en-CA"
+                      )}
+                    </span>
 
-          {/*  */}
-          <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg mr-7">
-            BMI History
-          </span>
-          <ul className="w-full py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
-            {bmiHistory.map((bmi, element) => {
-              return (
-                <li key={element}>
-                  <span>Date: {bmi.ht_date}</span>
-                  <ul className="px-10 py-2 ">
-                    <li>Weight: {bmi.weight} kg</li>
-                    <li>Height: {bmi.height} cm</li>
-                    {calculateBMI(bmi.weight, bmi.height)}
-                  </ul>
-                </li>
-              );
-            })}
+                    <span className="block">
+                      <span className="font-semibold">Allergies:</span>{" "}
+                      {record.allergies}
+                    </span>
+                    <span className="block">
+                      <span className="font-semibold">Temperature: </span>
+                      {record.temperature}
+                    </span>
+                    <span className="block">
+                      <span className="font-semibold">Coughs: </span>{" "}
+                      {record.cough}
+                    </span>
+                    <span className="block">
+                      <span className="font-semibold">Colds: </span>
+                      {record.cold}
+                    </span>
+                  </li>
+                );
+              })
+            )}
           </ul>
         </div>
       </section>
@@ -408,45 +502,68 @@ export default function ViewBMITracking() {
         <div className="flex-1 gap-3 rounded-lg">
           <div className="px-4 py-3 text-gray-500 bg-white rounded-lg">
             <span className="px-5 text-base text-blue-600">Prescription</span>
-            <hr className="my-4 bg-gray-100 prescriptionHr" />
-            <ul className="text-left list-disc px-9">
+            <hr className="my-4 bg-gray-100 " />
+            <ul className="text-left list-decimal px-9 text-black">
               {bmiHistory.length > 0 ? (
-                <Prescription
-                  height={bmiHistory[0].height}
-                  weight={bmiHistory[0].weight}
-                ></Prescription>
+                <>
+                  <Prescription
+                    height={bmiHistory[0].height}
+                    weight={bmiHistory[0].weight}
+                  />
+                </>
               ) : (
-                <span className="text-center">No BMI available</span>
+                ""
+              )}
+              {medicinePrescription.map((item) =>
+                item ? <li>{item}</li> : ""
               )}
             </ul>
 
             {/*  */}
           </div>
-          <div className="px-4 py-3 my-3 text-sm text-center bg-white rounded-lg ">
-            <h4 className="px-5 text-base text-left text-blue-600">
-              Medical History & Records
-            </h4>
-            <hr className="flex-1 mt-3" />
-            <ul className="px-8 py-2 my-auto mt-4 text-left text-gray-500 list-disc rounded-lg medicalhistoryrecords">
-              {historyRecords.map((record, index) => {
-                return (
-                  <li key={index}>
-                    <span className="block">
-                      Date:{" "}
-                      {new Date(record.history_date).toLocaleDateString(
-                        "en-CA"
-                      )}
-                    </span>
+          <div className="px-4 py-3 my-3 bg-white rounded-lg ">
+            <span className="block px-4 py-2 text-base text-blue-600 bg-white rounded-lg mr-7">
+              BMI History
+            </span>
+            <hr />
+            <ul className="w-full py-2 mt-3 text-black rounded-lg bmiHistory ">
+              {bmiHistory.length === 0 ? (
+                <span className="text-gray-500 pl-9">No records</span>
+              ) : (
+                bmiHistory.map((bmi, element) => {
+                  return (
+                    <div className="flex p-3 mb-5 border-2 border-gray-100 rounded-md">
+                      <div className="flex-1">
+                        {calculateBMI(bmi.weight, bmi.height)}
+                      </div>
+                      <div className="flex flex-col flex-1">
+                        <span>
+                          <span className="font-semibold">Weight: </span>
+                          {bmi.weight}
+                        </span>
+                        <span>
+                          <span className="font-semibold">Height: </span>
+                          {bmi.height}
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          <span> Date:</span> {bmi.ht_date}
+                        </span>
+                      </div>
+                    </div>
 
-                    <span className="block">Allergies: {record.allergies}</span>
-                    <span className="block">
-                      Temperature: {record.temperature}
-                    </span>
-                    <span className="block">Coughs: {record.cough}</span>
-                    <span className="block">Colds: {record.cold}</span>
-                  </li>
-                );
-              })}
+                    // <li key={element}>
+                    //   <span>Date: {bmi.ht_date}</span>
+                    //   <ul className="px-10 py-2 ">
+                    //     <li>Weight: {bmi.weight} kg</li>
+                    //     <li>Height: {bmi.height} cm</li>
+                    //     {calculateBMI(bmi.weight, bmi.height)}
+                    //   </ul>
+                    // </li>
+                  );
+                })
+              )}
             </ul>
 
             {/* <span className="text-base">Prescription</span>

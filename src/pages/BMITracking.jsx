@@ -88,6 +88,11 @@ export default function BMITracking() {
   };
 
   const calculateBMI = (value1, value2) => {
+
+    if (!value1 || !value2) {
+      return "N/A";
+    }
+
     const weightInKg = value1;
     const heightInMeters = value2 / 100;
     const bmi = (weightInKg / Math.pow(heightInMeters, 2)).toFixed(2);

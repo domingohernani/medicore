@@ -10,57 +10,7 @@ export default function RemindersView() {
 
   const navigate = useNavigate();
 
-  const sendMessage = async () => {
-    let name, id;
   
-    try {
-      const response = await axios.get(
-        `http://localhost:8800/getChildId/${search}`
-      );
-      name = response.data[0]?.name;
-      id = response.data[0]?.child_id;
-      console.log(response.data[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  
-    if (!name || message.trim() === "") {
-      window.alert("Please enter a valid input");
-      return; // Add return to exit the function if validation fails
-    }
-  
-    try {
-      const response = await axios.post("http://localhost:8800/message", {
-        message,
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  
-    const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
-  
-    let willReload = false;
-    try {
-      const response = await axios.put("http://localhost:8800/insertReminder", {
-        message,
-        currentDate,
-        id,
-      });
-      willReload = response.data.reloadPage;
-    } catch (error) {
-      console.log(error);
-    }
-  
-    if (willReload) {
-      window.location.reload();
-      setTimeout(() => {
-        navigate("/reminders");
-      }, 3000); 
-    } else {
-      window.alert("There is something wrong with sending the message!");
-    }
-  };
   
 
   useEffect(() => {

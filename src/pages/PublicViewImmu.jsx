@@ -5,7 +5,6 @@ import applyIcon from "../assets/bmitrackingassets/applyIcon.svg";
 import cancelIcon from "../assets/bmitrackingassets/cancelIcon.svg";
 import { useNavigate } from "react-router-dom";
 
-
 export default function ViewImmunization() {
   const { childId } = useParams();
   const [updateButtonClicked, setUpdateButtonClicked] = useState(false);
@@ -123,6 +122,51 @@ export default function ViewImmunization() {
     }
   };
 
+  const [medicineTaken, setMedicineTaken] = useState([]);
+  const [medicinePrescription, setMedicinePrescription] = useState([]);
+
+  const prescribeUsingMedicines = () => {
+    let prescription = [];
+
+    const getPrescriptionText = (vaccineName, occurrenceCount) => {
+      switch (vaccineName) {
+        case "BCG Vaccine":
+          return occurrenceCount > 0
+            ? "Siya ay may mababang tsansa na mahawaan ng ilang uri ng tuberculosis (TB)"
+            : "Mataas ang panganib na mahawaan siya ng ilang uri ng tuberculosis (TB)";
+        case "Hepatitis B Vaccine":
+          return occurrenceCount > 0
+            ? "Protektado ang bata sa Hepatitis B, na maaaring magdulot ng seryosong problema sa atay"
+            : "May panganib na mahawa siya ng Hepatitis B virus kung sakaling magkaruon siya ng contact sa isang taong may sakit";
+        case "Inactivated Polio Vaccine (PIV)":
+          return occurrenceCount >= 2
+            ? "Mataas ang immune response ng bata laban sa polio"
+            : "Delekado ang situation ng bata. Maari siyang mahawala ng polio, isang nakakahawang sakit na maaaring magdulot ng paralysis";
+        case "Measles, Mumps, Rubella Vaccine (MMR)":
+          return occurrenceCount > 0
+            ? "Mataas proteksyon laban sa tigdas, bulutong, at rubella, na nagpapababa ng panganib na magkaruon ng mga malubhang sakit at komplikasyon"
+            : "Mataas ang tsansang mahawa ang bata sa tigdas, bulutong, at rubella";
+        case "Pentavalent Vaccine (DPT-Hep B-HIB)":
+          return occurrenceCount > 0
+            ? "Protektado laban sa diphtheria, pertussis, tetanus, Hepatitis B, at Haemophilus influenzae type b (HIB). Pangmatagalan at komprehensibong proteksyon laban sa mga nabanggit na sakit."
+            : "Ang bata ay maaaring mas madaling matamaan ng diphtheria, pertussis, tetanus, Hepatitis B, at Haemophilus influenzae type b (HIB)";
+        case "Pneumococcal Conjugate Vaccine (PCV)":
+          return occurrenceCount > 0
+            ? "Protektado laban sa ilang uri ng bacteria na sanhi ng pneumonia, meningitis, at iba pang respiratory infections"
+            : "Mataas ang panganib na mahawaan ng mga sakit na dulot ng pneumococcus, na maaaring magresulta sa pneumonia, meningitis, o iba pang respiratory infections na maaaring magdulot ng komplikasyon at kritikal na kondisyon";
+        default:
+          return "";
+      }
+    };
+
+    medicineTaken.forEach((vaccine) => {
+      const text = getPrescriptionText(vaccine.name, vaccine.occurrence_count);
+      prescription.push(text);
+    });
+
+    setMedicinePrescription(prescription);
+  };
+
   // Kinukuha yung mga children from the database
   useEffect(() => {
     const fetchAllChild = async () => {
@@ -169,9 +213,18 @@ export default function ViewImmunization() {
       } catch (error) {
         console.log(error);
       }
+      try {
+        const response = await axios.get(
+          `http://localhost:8800/prescribeMedicines/${childId}`
+        );
+        setMedicineTaken(response.data);
+        prescribeUsingMedicines();
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchAllChild();
-  }, []);
+  }, [childId, medicinePrescription]);
 
   const capitalizeAfterSpace = (inputString) => {
     const words = inputString.split(" ");
@@ -233,16 +286,17 @@ export default function ViewImmunization() {
   };
 
   return (
-    <section className="bg-white">
-      {updateImmuModal && (
-        <UpdateImmunizationModal onClose={triggerUpdate} childId={childId} />
-      )}
-      {editImmuModal && (
-        <EditImmunizationModal onClose={triggerEdit} childId={childId} />
-      )}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex gap-4">
-          {/* <button
+    <>
+      <section className="bg-white">
+        {updateImmuModal && (
+          <UpdateImmunizationModal onClose={triggerUpdate} childId={childId} />
+        )}
+        {editImmuModal && (
+          <EditImmunizationModal onClose={triggerEdit} childId={childId} />
+        )}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex gap-4">
+            {/* <button
             className="flex items-center justify-center gap-2 px-6 bg-white border-2 border-black text-blue"
             onClick={triggerEdit}
           >
@@ -263,491 +317,33 @@ export default function ViewImmunization() {
 
             <span>Edit Record</span>
           </button> */}
+          </div>
         </div>
-      </div>
-      {/* </div> */}
+        {/* </div> */}
 
-      <div className="mt-5 ml-5" onClick={()=>{
-         navigate("/enterId")
-      }}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="25"
-          width="25"
-          fill="black"
-          viewBox="0 0 512 512"
+        <div
+          className="mt-5 ml-5"
+          onClick={() => {
+            navigate("/enterId");
+          }}
         >
-          <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 288 480 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-370.7 0 73.4-73.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-128 128z" />
-        </svg>
-      </div>
-      <div className="gap-4 px-5 py-3 mb-3 bg-white rounded-lg ">
-        <span className="col-start-1 col-end-4 font-light">
-          ID: CAB-UR-{childDetails.child_id}
-        </span>
-        <span className="flex items-center justify-end col-start-4 col-end-4 gap-2 font-light ">
-          {updateButtonClicked ? (
-            <>
-              <img
-                src={cancelIcon}
-                alt="icon"
-                width={"20px"}
-                className="cursor-pointer"
-                title="Cancel changes"
-                onClick={() => setUpdateButtonClicked(false)}
-              />
-            </>
-          ) : null}
-        </span>
-        <div className="flex flex-col">
-          <span>
-            Name: <span className="font-bold"> {childDetails.name}</span>
-          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="25"
+            width="25"
+            fill="black"
+            viewBox="0 0 512 512"
+          >
+            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 288 480 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-370.7 0 73.4-73.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-128 128z" />
+          </svg>
         </div>
-      </div>
-
-      {/* Old Details View */}
-      {/* <div className="grid grid-cols-3 gap-2 p-4 mb-2 bg-white rounded-lg">
-        <div>
-          <span>
-            Child name: <span className="font-bold">{childDetails.name}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Mother's name:{" "}
-            <span className="font-bold">{childDetails.mother}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Health Center:{" "}
-            <span className="font-bold">Cabaruan Health Center</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Date of Birth:{" "}
-            <span className="font-bold">{childDetails.date_of_birth}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Father's name:{" "}
-            <span className="font-bold">{childDetails.father}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Barangay: <span className="font-bold">Cabaruan</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Place of Birth:{" "}
-            <span className="font-bold">{childDetails.place_of_birth}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Cellphone No.:{" "}
-            <span className="font-bold">{childDetails.family_number}</span>
-          </span>
-        </div>
-        <div>
-          <span>
-            Sex: <span className="font-bold">{childDetails.sex}</span>
-          </span>
-        </div>
-        <div className="col-span-2">
-          <span>
-            Address: <span className="font-bold">{childDetails.address}</span>
-          </span>
-        </div>
-      </div> */}
-
-      <div className="grid grid-cols-4 p-4 text-sm font-semibold text-center bg-white rounded-md gap-x-4 gap-y-3 ">
-        <div className="p-3 text-white rounded-md bg-C0D3E5A">Bakuna</div>
-        <div className="p-3 text-white rounded-md bg-C0D3E5A">Doses</div>
-        <div className="p-3 text-white rounded-md bg-C0D3E5A">
-          Petsa ng bakuna MM/DD/YY
-        </div>
-        <div className="p-3 text-white rounded-md bg-C0D3E5A">Remarks</div>
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">BCG Vaccine</div>
-        <div className="p-3 rounded-md bg-CD9D9D9">1) At birth</div>
-        <div className="border-2 rounded-md bg-CD9D9D9">
-          {updateButton ? (
-            <input
-              type="date"
-              className="w-full h-full text-center rounded-md"
-              onChange={(e) => setUpdateBCGVaccine1(e.target.value)}
-            />
-          ) : (
-            BCGVaccine.map((element) => {
-              const date = new Date(element.date_administered);
-              const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-              // return <p>1) {formattedDate}</p>;
-              return (
-                <input
-                  type="text"
-                  value={formattedDate}
-                  className="w-full h-full text-center rounded-md "
-                />
-              );
-            })
-          )}
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {BCGVaccineRemarks.length === 1 ? "Vaccinated" : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9 ">Hepatitis B Vaccine</div>
-        <div className="p-3 rounded-md bg-CD9D9D9 ">1) At birth</div>
-        <div className="border-2 rounded-md bg-CD9D9D9 ">
-          {updateButton ? (
-            <input
-              type="date"
-              className="w-full h-full text-center rounded-md"
-              onChange={(e) => setUpdateHepatitisBVaccine1(e.target.value)}
-            />
-          ) : (
-            HepatitisBVaccine.map((element) => {
-              const date = new Date(element.date_administered);
-              const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-              // return <p>1) {formattedDate}</p>;
-              return (
-                <input
-                  type="text"
-                  value={formattedDate}
-                  className="w-full h-full text-center rounded-md"
-                />
-              );
-            })
-          )}
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md ">
-          {HepatitisBVaccineRemarks.length === 1 ? "Vaccinated" : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          Pentavalent Vaccine (DPT-Hep B-HIB)
-        </div>
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          3) 1 1/2, 2 1/2, 3 1/2 months
-        </div>
-        <div className="rounded-md bg-CD9D9D9">
-          <div className="flex flex-col text-sm border rounded-md">
-            {updateButton ? (
-              <>
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) => setUpdatePentavalent1(e.target.value)}
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) => setUpdatePentavalent2(e.target.value)}
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) => setUpdatePentavalent3(e.target.value)}
-                />
-              </>
-            ) : (
-              Pentavalent.map((element, index) => {
-                const date = new Date(element.date_administered);
-                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-                // return <p>1) {formattedDate}</p>;
-                return (
-                  <input
-                    type="text"
-                    value={formattedDate}
-                    className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
-                  />
-                );
-              })
-            )}
-          </div>
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {PentavalentRemarks.length === 3 ? "Vaccinated" : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          Oral Polio Vaccine (OPV)
-        </div>
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          3) 1 1/2, 2 1/2, 3 1/2 months
-        </div>
-        <div className="rounded-md bg-CD9D9D9">
-          <div className="flex flex-col text-sm border rounded-md">
-            {updateButton ? (
-              <>
-                <input
-                  type="date"
-                  className="w-full h-full text-center"
-                  onChange={(e) => setUpdateOralPolioVaccine1(e.target.value)}
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) => setUpdateOralPolioVaccine2(e.target.value)}
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) => setUpdateOralPolioVaccine3(e.target.value)}
-                />
-              </>
-            ) : (
-              OralPolioVaccine.map((element, index) => {
-                const date = new Date(element.date_administered);
-                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-                // return <p>1) {formattedDate}</p>;
-                return (
-                  <input
-                    type="text"
-                    value={formattedDate}
-                    className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
-                  />
-                );
-              })
-            )}
-          </div>
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {OralPolioVaccineRemarks.length === 3 ? "Vaccinated" : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          Inactivated Polio Vaccine (PIV)
-        </div>
-        <div className="p-3 rounded-md bg-CD9D9D9">2) 3 1/2 & 9 months</div>
-        <div className="rounded-md bg-CD9D9D9">
-          <div className="flex justify-center text-sm border rounded-md ">
-            {updateButton ? (
-              <>
-                <input
-                  type="date"
-                  className="w-full h-full py-3 text-center"
-                  onChange={(e) => setUpdateInactivatedPolio1(e.target.value)}
-                />
-                <input
-                  type="date"
-                  className="w-full h-full py-3 text-center "
-                  onChange={(e) => setUpdateInactivatedPolio2(e.target.value)}
-                />
-              </>
-            ) : (
-              InactivatedPolio.map((element, index) => {
-                const date = new Date(element.date_administered);
-                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-                // return <p>1) {formattedDate}</p>;
-                return (
-                  <input
-                    type="text"
-                    value={formattedDate}
-                    className="flex-1 w-full h-full py-3 text-center border-2 border-CEDEDED"
-                  />
-                );
-              })
-            )}
-          </div>
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {InactivatedPolioRemarks.length === 2 ? "Vaccinated" : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          Pneumococcal Conjugate Vaccine (PCV)
-        </div>
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          3) 1 1/2, 2 1/2, 3 1/2 months
-        </div>
-        <div className="border rounded-md bg-CD9D9D9">
-          <div className="flex flex-col text-sm">
-            {updateButton ? (
-              <>
-                <input
-                  type="date"
-                  className="w-full h-full text-center"
-                  onChange={(e) =>
-                    setUpdatePneumococcalConjugate1(e.target.value)
-                  }
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) =>
-                    setUpdatePneumococcalConjugate2(e.target.value)
-                  }
-                />
-                <input
-                  type="date"
-                  className="w-full h-full text-center "
-                  onChange={(e) =>
-                    setUpdatePneumococcalConjugate3(e.target.value)
-                  }
-                />
-              </>
-            ) : (
-              PneumococcalConjugate.map((element, index) => {
-                const date = new Date(element.date_administered);
-                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-                // return <p>1) {formattedDate}</p>;
-                return (
-                  <input
-                    type="text"
-                    value={formattedDate}
-                    className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
-                  />
-                );
-              })
-            )}
-          </div>
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {PneumococcalConjugateRemarks.length === 3
-            ? "Vaccinated"
-            : "On process"}
-        </div>
-        {/* ----- */}
-
-        {/* ----- */}
-        <div className="p-3 rounded-md bg-CD9D9D9">
-          Measles, Mumps, Rubella Vaccine (MMR)
-        </div>
-        <div className="p-3 rounded-md bg-CD9D9D9">2) 9 months & 1 year</div>
-        <div className="border-2 rounded-md bg-CD9D9D9">
-          <div className="flex text-sm">
-            {updateButton ? (
-              <>
-                <input
-                  type="date"
-                  className="w-full h-full py-5 text-center"
-                  onChange={(e) =>
-                    setUpdateMeaslesMumpsRubella1(e.target.value)
-                  }
-                />
-                <input
-                  type="date"
-                  className="w-full h-full py-5 text-center "
-                  onChange={(e) =>
-                    setUpdateMeaslesMumpsRubella2(e.target.value)
-                  }
-                />
-              </>
-            ) : (
-              MeaslesMumpsRubella.map((element, index) => {
-                const date = new Date(element.date_administered);
-                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
-                // return <p>1) {formattedDate}</p>;
-                return (
-                  <input
-                    type="text"
-                    value={formattedDate}
-                    className="flex-1 w-full h-full py-6 text-center border border-CEDEDED"
-                  />
-                );
-              })
-            )}
-          </div>
-        </div>
-        <div className="p-3 bg-white border-2 rounded-md">
-          {MeaslesMumpsRubellaRemarks.length === 2
-            ? "Vaccinated"
-            : "On process"}
-        </div>
-        {/* ----- */}
-      </div>
-    </section>
-  );
-}
-
-/*
-
-<div className="flex flex-col w-3/12 gap-3 font-semibold text-center">
-          <div className="w-full px-3 py-4 text-white bg-C0D3E5A ">Bakuna</div>
-          <div className="w-full px-3 py-4 border-2 border-blue-950 text-blue-950 bg-C869EAC">
-            BCG Vaccine
-          </div>
-          <div className="w-full px-3 py-4 border-2 border-blue-950 text-blue-950 bg-C869EAC">
-            Hepatitis B Vaccine
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            Pentavalent Vaccine (DPT-Hep B-HIB)
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            Oral Polio Vaccine (OPV)
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            Inactivated Polio Vaccine (PIV)
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            Pneumococcal Conjugate Vaccine (PCV)
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            Measles, Mumps, Rubella Vaccine (MMR)
-          </div>
-        </div>
-
-        <div className="flex flex-col w-3/12 gap-3 font-semibold text-center">
-          <div className="w-full px-3 py-4 text-white bg-C0D3E5A ">Doses</div>
-          <div className="w-full px-3 py-4 border-2 border-blue-950 text-blue-950 bg-C869EAC">
-            1) At birth
-          </div>
-          <div className="w-full px-3 py-4 border-2 border-blue-950 text-blue-950 bg-C869EAC">
-            1) At birth
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            3) 1 1/2, 2 1/2, 3 1/2 months
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            3) 1 1/2, 2 1/2, 3 1/2 months
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            2) 3 1/2 & 9 months
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            3) 1 1/2, 2 1/2, 3 1/2 months
-          </div>
-          <div className="w-full px-3 py-4 border-2 text-blue-950 border-blue-950 bg-C869EAC">
-            2) 9 months & 1 year
-          </div>
-        </div>
-
-*/
-
-// copies
-/*
-
- <div className="grid grid-cols-4 gap-4 px-5 py-3 bg-white rounded-lg">
+        <div className="gap-4 px-5 py-3 mb-3 bg-white rounded-lg ">
           <span className="col-start-1 col-end-4 font-light">
             ID: CAB-UR-{childDetails.child_id}
           </span>
           <span className="flex items-center justify-end col-start-4 col-end-4 gap-2 font-light ">
             {updateButtonClicked ? (
               <>
-                <img
-                  src={applyIcon}
-                  alt="icon"
-                  width={"20px"}
-                  className="cursor-pointer"
-                  title="Apply changes"
-                  onClick={() => applyChanges(childDetails.child_id)}
-                />
                 <img
                   src={cancelIcon}
                   alt="icon"
@@ -758,143 +354,330 @@ export default function ViewImmunization() {
                 />
               </>
             ) : null}
-            <img
-              src={editIcon}
-              alt="icon"
-              width={"18px"}
-              className="cursor-pointer"
-              onClick={updateRecord}
-            />
           </span>
-          <div className="flex flex-col ">
-            <span>Name</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                placeholder={childDetails.name}
-                className="font-bold"
-                value={name}
-                onChange={(e) => setName(capitalizeAfterSpace(e.target.value))}
-              />
-            ) : (
-              <span className="font-bold">{childDetails.name}</span>
-            )}
-          </div>
           <div className="flex flex-col">
-            <span>Age</span>
-            <span className="font-bold">{childDetails.age}</span>
-          </div>
-          <div className="flex flex-col">
-            <span>Gender</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                placeholder={childDetails.sex}
-                className="font-bold"
-                value={gender}
-                onChange={(e) =>
-                  setGender(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.sex}</span>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span>Birthdate</span>
-            {updateButtonClicked ? (
-              <input
-                type="date"
-                value={birthdate}
-                onChange={(e) => setBirthdate(e.target.value)}
-              />
-            ) : (
-              <span className="font-bold">{childDetails.date_of_birth}</span>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span>Place of birth</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                placeholder={childDetails.place_of_birth}
-                className="font-bold"
-                value={placeofbirth}
-                onChange={(e) =>
-                  setPlaceofbirth(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.place_of_birth}</span>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span>Contact no.</span>
-            {updateButtonClicked ? (
-              <input
-                type="number"
-                placeholder={childDetails.family_number}
-                className="font-bold"
-                value={number}
-                onChange={(e) =>
-                  setNumber(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.family_number}</span>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span>Mother's Name</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                className="font-bold"
-                placeholder={childDetails.mother}
-                value={mothersname}
-                onChange={(e) =>
-                  setMothersname(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.mother}</span>
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span>Father's Name</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                className="font-bold"
-                placeholder={childDetails.father}
-                value={fathersname}
-                onChange={(e) =>
-                  setFathersname(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.father}</span>
-            )}
-          </div>
-          <div className="flex flex-col col-span-3 ">
-            <span>Address</span>
-            {updateButtonClicked ? (
-              <input
-                type="text"
-                className="font-bold"
-                placeholder={childDetails.address}
-                value={address}
-                onChange={(e) =>
-                  setAddress(capitalizeAfterSpace(e.target.value))
-                }
-              />
-            ) : (
-              <span className="font-bold">{childDetails.address}</span>
-            )}
-          </div>
-          <div className="">
-            <span>Status: </span>
-            {showStatusTag(childDetails.status)}
+            <span>
+              Name: <span className="font-bold"> {childDetails.name}</span>
+            </span>
           </div>
         </div>
-*/
+
+        <div className="grid grid-cols-4 p-4 text-sm font-semibold text-center bg-white rounded-md gap-x-4 gap-y-3 ">
+          <div className="p-3 text-white rounded-md bg-C0D3E5A">Bakuna</div>
+          <div className="p-3 text-white rounded-md bg-C0D3E5A">Doses</div>
+          <div className="p-3 text-white rounded-md bg-C0D3E5A">
+            Petsa ng bakuna MM/DD/YY
+          </div>
+          <div className="p-3 text-white rounded-md bg-C0D3E5A">Remarks</div>
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">BCG Vaccine</div>
+          <div className="p-3 rounded-md bg-CD9D9D9">1) At birth</div>
+          <div className="border-2 rounded-md bg-CD9D9D9">
+            {updateButton ? (
+              <input
+                type="date"
+                className="w-full h-full text-center rounded-md"
+                onChange={(e) => setUpdateBCGVaccine1(e.target.value)}
+              />
+            ) : (
+              BCGVaccine.map((element) => {
+                const date = new Date(element.date_administered);
+                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                // return <p>1) {formattedDate}</p>;
+                return (
+                  <input
+                    type="text"
+                    value={formattedDate}
+                    className="w-full h-full text-center rounded-md "
+                  />
+                );
+              })
+            )}
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {BCGVaccineRemarks.length === 1 ? "Vaccinated" : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9 ">Hepatitis B Vaccine</div>
+          <div className="p-3 rounded-md bg-CD9D9D9 ">1) At birth</div>
+          <div className="border-2 rounded-md bg-CD9D9D9 ">
+            {updateButton ? (
+              <input
+                type="date"
+                className="w-full h-full text-center rounded-md"
+                onChange={(e) => setUpdateHepatitisBVaccine1(e.target.value)}
+              />
+            ) : (
+              HepatitisBVaccine.map((element) => {
+                const date = new Date(element.date_administered);
+                const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                // return <p>1) {formattedDate}</p>;
+                return (
+                  <input
+                    type="text"
+                    value={formattedDate}
+                    className="w-full h-full text-center rounded-md"
+                  />
+                );
+              })
+            )}
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md ">
+            {HepatitisBVaccineRemarks.length === 1
+              ? "Vaccinated"
+              : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            Pentavalent Vaccine (DPT-Hep B-HIB)
+          </div>
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            3) 1 1/2, 2 1/2, 3 1/2 months
+          </div>
+          <div className="rounded-md bg-CD9D9D9">
+            <div className="flex flex-col text-sm border rounded-md">
+              {updateButton ? (
+                <>
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) => setUpdatePentavalent1(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) => setUpdatePentavalent2(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) => setUpdatePentavalent3(e.target.value)}
+                  />
+                </>
+              ) : (
+                Pentavalent.map((element, index) => {
+                  const date = new Date(element.date_administered);
+                  const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                  // return <p>1) {formattedDate}</p>;
+                  return (
+                    <input
+                      type="text"
+                      value={formattedDate}
+                      className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
+                    />
+                  );
+                })
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {PentavalentRemarks.length === 3 ? "Vaccinated" : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            Oral Polio Vaccine (OPV)
+          </div>
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            3) 1 1/2, 2 1/2, 3 1/2 months
+          </div>
+          <div className="rounded-md bg-CD9D9D9">
+            <div className="flex flex-col text-sm border rounded-md">
+              {updateButton ? (
+                <>
+                  <input
+                    type="date"
+                    className="w-full h-full text-center"
+                    onChange={(e) => setUpdateOralPolioVaccine1(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) => setUpdateOralPolioVaccine2(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) => setUpdateOralPolioVaccine3(e.target.value)}
+                  />
+                </>
+              ) : (
+                OralPolioVaccine.map((element, index) => {
+                  const date = new Date(element.date_administered);
+                  const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                  // return <p>1) {formattedDate}</p>;
+                  return (
+                    <input
+                      type="text"
+                      value={formattedDate}
+                      className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
+                    />
+                  );
+                })
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {OralPolioVaccineRemarks.length === 3 ? "Vaccinated" : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            Inactivated Polio Vaccine (PIV)
+          </div>
+          <div className="p-3 rounded-md bg-CD9D9D9">2) 3 1/2 & 9 months</div>
+          <div className="rounded-md bg-CD9D9D9">
+            <div className="flex justify-center text-sm border rounded-md ">
+              {updateButton ? (
+                <>
+                  <input
+                    type="date"
+                    className="w-full h-full py-3 text-center"
+                    onChange={(e) => setUpdateInactivatedPolio1(e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full py-3 text-center "
+                    onChange={(e) => setUpdateInactivatedPolio2(e.target.value)}
+                  />
+                </>
+              ) : (
+                InactivatedPolio.map((element, index) => {
+                  const date = new Date(element.date_administered);
+                  const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                  // return <p>1) {formattedDate}</p>;
+                  return (
+                    <input
+                      type="text"
+                      value={formattedDate}
+                      className="flex-1 w-full h-full py-3 text-center border-2 border-CEDEDED"
+                    />
+                  );
+                })
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {InactivatedPolioRemarks.length === 2 ? "Vaccinated" : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            Pneumococcal Conjugate Vaccine (PCV)
+          </div>
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            3) 1 1/2, 2 1/2, 3 1/2 months
+          </div>
+          <div className="border rounded-md bg-CD9D9D9">
+            <div className="flex flex-col text-sm">
+              {updateButton ? (
+                <>
+                  <input
+                    type="date"
+                    className="w-full h-full text-center"
+                    onChange={(e) =>
+                      setUpdatePneumococcalConjugate1(e.target.value)
+                    }
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) =>
+                      setUpdatePneumococcalConjugate2(e.target.value)
+                    }
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full text-center "
+                    onChange={(e) =>
+                      setUpdatePneumococcalConjugate3(e.target.value)
+                    }
+                  />
+                </>
+              ) : (
+                PneumococcalConjugate.map((element, index) => {
+                  const date = new Date(element.date_administered);
+                  const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                  // return <p>1) {formattedDate}</p>;
+                  return (
+                    <input
+                      type="text"
+                      value={formattedDate}
+                      className="flex-1 w-full h-full py-1 text-center border-2 border-CEDEDED"
+                    />
+                  );
+                })
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {PneumococcalConjugateRemarks.length === 3
+              ? "Vaccinated"
+              : "On process"}
+          </div>
+          {/* ----- */}
+
+          {/* ----- */}
+          <div className="p-3 rounded-md bg-CD9D9D9">
+            Measles, Mumps, Rubella Vaccine (MMR)
+          </div>
+          <div className="p-3 rounded-md bg-CD9D9D9">2) 9 months & 1 year</div>
+          <div className="border-2 rounded-md bg-CD9D9D9">
+            <div className="flex text-sm">
+              {updateButton ? (
+                <>
+                  <input
+                    type="date"
+                    className="w-full h-full py-5 text-center"
+                    onChange={(e) =>
+                      setUpdateMeaslesMumpsRubella1(e.target.value)
+                    }
+                  />
+                  <input
+                    type="date"
+                    className="w-full h-full py-5 text-center "
+                    onChange={(e) =>
+                      setUpdateMeaslesMumpsRubella2(e.target.value)
+                    }
+                  />
+                </>
+              ) : (
+                MeaslesMumpsRubella.map((element, index) => {
+                  const date = new Date(element.date_administered);
+                  const formattedDate = date.toLocaleDateString("en-GB"); // Format as DD/MM/YYYY
+                  // return <p>1) {formattedDate}</p>;
+                  return (
+                    <input
+                      type="text"
+                      value={formattedDate}
+                      className="flex-1 w-full h-full py-6 text-center border border-CEDEDED"
+                    />
+                  );
+                })
+              )}
+            </div>
+          </div>
+          <div className="p-3 bg-white border-2 rounded-md">
+            {MeaslesMumpsRubellaRemarks.length === 2
+              ? "Vaccinated"
+              : "On process"}
+          </div>
+          {/* ----- */}
+        </div>
+      </section>
+      <section className="p-4 bg-white">
+        <div className="font-bold ">Prescription</div>
+        <div>
+          {medicinePrescription.map((item) => (item ? <li>{item}</li> : ""))}
+        </div>
+      </section>
+    </>
+  );
+}

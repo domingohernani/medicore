@@ -103,7 +103,7 @@ export default function ListOfChildren() {
           <tr className="my-5 text-center border-b">
             <th
               onClick={() => handleSort("child_id")}
-              className="px-8 cursor-pointer"
+              className="px-9 cursor-pointer"
               title="Sort by Child ID"
             >
               Child ID
