@@ -5,9 +5,9 @@ export default {
     extend: {
       colors: { 
         CEDEDED: "#EDEDED",
-        C0076BE: "#0076BE",
+        C0076BE: "#E3F5FF",
         C1886C3: "#1886C3",
-        C0076BE: "#0076BE",
+        C0076BE: "#E3F5FF",
         C40BE04: "#40BE04",
         CD9D9D9: "#D9D9D9",
         C0D3E5A: "#0D3E5A",

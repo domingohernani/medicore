@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 :root {
-  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  font-family: "Poppins", sans-serif;
+  /* font-family: 'Inter', sans-serif; */
+  /* font-family: "Poppins", sans-serif; */
   /* font-family: 'Syne', sans-serif; */
   /* font-family: 'Montserrat', sans-serif; */
-  font-size: 0.9rem;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 0.84rem;
   line-height: 1.5;
   font-weight: 400;
 
@@ -47,7 +48,6 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
     color: #213547;
-    background-color: #ededed;
   }
   a:hover {
     color: #747bff;
@@ -115,7 +115,6 @@ textarea {
   font-size: 3rem;
 }
 
-
 .reminderScreen {
   height: 36rem;
   position: fixed;
@@ -130,4 +129,8 @@ textarea {
   background-position: center;
   position: fixed;
   z-index: -30;
+}
+
+::placeholder {
+  font-weight: 300;
 }

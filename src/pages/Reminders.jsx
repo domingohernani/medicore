@@ -35,31 +35,17 @@ export default function RemindersView() {
     setFilteredReminders(filteredList);
   }, [search, reminders]);
 
-  const deleteReminder = async (reminderId) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:8800/deleteReminder/${reminderId}`
-      );
-      console.log(response.data);
-      if (response.data.reloadPage) {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="">
       <div className="flex items-center justify-center ">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
-          Reminder
+          Reminder Messages
         </h3>
-        <div className="flex items-center flex-1 gap-2 ml-4">
+        <div className="flex items-center flex-1 gap-2 h-fit">
           <input
             type="text"
-            className="w-9/12 h-8 pl-3 rounded-lg bg-CD9D9D9"
-            placeholder="Search by name"
+            className="w-2/3 h-full py-4 pl-3 border focus:outline-none"
+            placeholder="Search by name..."
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />

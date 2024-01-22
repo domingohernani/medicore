@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import axios from "axios";
 
-const WineProductionChart = () => {
+const BMIChart = () => {
   const [data, setData] = useState([]);
   const [layout, setLayout] = useState({});
   const [underweight, setUnderweight] = useState(0);
@@ -61,9 +61,19 @@ const WineProductionChart = () => {
         ];
 
         const chartLayout = {
-          title: "BMI Tracking Bar Graph 2024",
-          font: {
-            family: "Poppins, sans-serif", 
+          title: {
+            text: "BMI Tracking Bar Graph",
+            font: {
+              // family: "Inter, sans-serif",
+              // family: 'Syne', sans-serif;
+              // family: "Poppins", sans-serif;
+              // family: 'Montserrat, sans-serif',
+              // family: 'Be Vietnam Pro', sans-serif;
+              // family: "Poppins, sans-serif",
+              family: "Be Vietnam Pro, sans-serif",
+              size: "16",
+              color: "black",
+            },
           },
         };
 
@@ -78,15 +88,18 @@ const WineProductionChart = () => {
   }, [underweight, normal, overweight, obese]); // Include state variables in the dependency array
 
   return (
-    <div className="w-full rounded-md">
+    <div className="rounded-md">
       <Plot
         data={data}
         layout={layout}
-        config={{ responsive: true }}
-        style={{ width: "100%", maxWidth: "100%"}}
+        config={{
+          responsive: true,
+          displayModeBar: false,
+        }}
+        style={{ width: "95%", maxWidth: "100%" }}
       />
     </div>
   );
 };
 
-export default WineProductionChart;
+export default BMIChart;

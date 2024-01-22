@@ -20,7 +20,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="flex flex-row items-center px-8 py-3 bg-white rounded-lg">
+    <nav className="flex flex-row items-center px-8 py-3 bg-white border-b ">
       <div className="w-1/6 logo">Medicore</div>
       <div className="z-30 flex flex-row justify-end flex-1 gap-2 ">
         {/* <div className="flex items-center justify-center w-10 h-10 border-2 rounded-full cursor-pointer border-C0076BE">

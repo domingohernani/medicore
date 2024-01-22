@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import WelcomeIllustration from "../assets/dashboardassets/welcomeillustration.svg";
-import WelcomeBanner from "../components/WelcomeBanner";
-// import dashboard from "../assets/dashboardassets/dashboard.svg"
 import graph from "../assets/bmi.svg";
 import axios from "axios";
-import WineProductionChart from "../components/WineProductionChart ";
+import BMIChart from "../components/BMIChart ";
 
 export default function Dashboard() {
   const [actives, setActives] = useState(0);
@@ -42,27 +40,24 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <>
-      <WelcomeBanner></WelcomeBanner>
-      <div className="flex flex-row gap-3 mx-auto mt-4 mb-3">
-        <div className="flex-1 p-5 text-center bg-blue-500 rounded-xl">
+    <main className="">
+      <div className="flex flex-row gap-3 mx-auto mb-3">
+        <div className="flex-1 p-5 text-center bg-C0076BE rounded-xl">
           <h1>{actives}</h1>
           <p>Total number of active children</p>
         </div>
-        <div className="flex-1 p-5 text-center bg-yellow-200 rounded-xl">
+        <div className="flex-1 p-5 text-center bg-C0076BE rounded-xl">
           <h1>{under}</h1>
           <p>Total number of children undergoing immunization</p>
         </div>
-        <div className="flex-1 p-5 text-center bg-red-400 rounded-xl">
+        <div className="flex-1 p-5 text-center bg-C0076BE rounded-xl">
           <h1>{complete}</h1>
           <p>Total number of children with complete immunization</p>
         </div>
       </div>
-      <WineProductionChart></WineProductionChart>
-
-      {/* <div>
-      <Doughnut />
-</div> */}
-    </>
+      <div className="w-full">
+        <BMIChart></BMIChart>
+      </div>
+    </main>
   );
 }

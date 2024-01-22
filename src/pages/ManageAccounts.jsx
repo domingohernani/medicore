@@ -10,6 +10,7 @@ export default function ManageAccounts() {
   const navigate = useNavigate();
 
   const [admins, setAdmins] = useState([]);
+  const [search, setSearch] = useState("");
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [adminIdToBePassed, setAdminIdToBePassed] = useState("");
@@ -53,18 +54,30 @@ export default function ManageAccounts() {
           oldPassword={passwordToBePassed}
         />
       )}
-      <div className="flex items-center justify-between">
+
+      <div className="flex items-center justify-center">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Manage Accounts
         </h3>
+        <div className="flex items-center flex-1 gap-2 h-fit">
+          <input
+            type="text"
+            className="w-2/3 h-full py-4 pl-3 border focus:outline-none"
+            placeholder="Search by username..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+         
+        </div>
         <NavLink to={"/addadmin"}>
           <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
             <img src={addIcon} alt="" width={"25px"} /> Add New Admin
           </button>
         </NavLink>
       </div>
+
       <section className="flex flex-col mx-auto mt-3 font-semibold bg-white rounded-lg">
-        <table className="w-full bg-white rounded-lg table-auto">
+        <table className="w-full bg-white border rounded-lg table-auto">
           <thead>
             <tr className="py-2 text-center border-b">
               <th>Username</th>
@@ -102,120 +115,126 @@ export default function ManageAccounts() {
             </tr>
           </thead>
           <tbody>
-            {admins.map((admin, index) =>
-              admin.role !== "president" ? (
-                <>
-                  <tr key={index} className="font-normal">
-                    <td>{admin.admin_username}</td>
-                    <td className="text-center">
-                      <input
-                        type={hideNewPassword ? "password" : "text"}
-                        value={admin.admin_password}
-                        className="focus:ring-0 focus:outline-none"
-                      />
-                    </td>
-                    <td>
-                      <span>{admin.role}</span>
-                    </td>
-                    <td
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setAdminIdToBePassed(admin.admin_id);
-                        setNameToBePassed(admin.admin_username);
-                        setPasswordToBePassed(admin.admin_password);
-                        showUpdateModal();
-                      }}
-                    >
-                      <div className="flex items-center gap-2 text-blue-600">
-                        <span>Update</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="16"
-                          width="16"
-                          fill="blue"
-                          viewBox="0 0 512 512"
-                        >
-                          <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z" />
-                        </svg>
-                      </div>
-                    </td>
+            {admins
+              .filter((admin) => {
+                return admin.admin_username
+                  .toLowerCase()
+                  .includes(search.toLowerCase());
+              })
+              .map((admin, index) =>
+                admin.role !== "president" ? (
+                  <>
+                    <tr key={index} className="font-normal">
+                      <td>{admin.admin_username}</td>
+                      <td className="text-center">
+                        <input
+                          type={hideNewPassword ? "password" : "text"}
+                          value={admin.admin_password}
+                          className="focus:ring-0 focus:outline-none"
+                        />
+                      </td>
+                      <td>
+                        <span>{admin.role}</span>
+                      </td>
+                      <td
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setAdminIdToBePassed(admin.admin_id);
+                          setNameToBePassed(admin.admin_username);
+                          setPasswordToBePassed(admin.admin_password);
+                          showUpdateModal();
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-blue-600">
+                          <span>Update</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16"
+                            width="16"
+                            fill="blue"
+                            viewBox="0 0 512 512"
+                          >
+                            <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z" />
+                          </svg>
+                        </div>
+                      </td>
 
-                    <td
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setAdminIdToBePassed(admin.admin_id);
-                        showModal();
-                      }}
-                    >
-                      <div className="flex items-center gap-2 text-red-600">
-                        <span>Delete</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="16"
-                          width="14"
-                          fill="red"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z" />
-                        </svg>
-                      </div>
-                    </td>
-                  </tr>
-                </>
-              ) : (
-                <>
-                  <tr>
-                    <td>Super Admin</td>
-                  </tr>
-                  <tr key={index} className="font-normal">
-                    <td>{admin.admin_username}</td>
-                    <td className="text-center ">
-                      <input
-                        type={hideNewPassword ? "password" : "text"}
-                        value={admin.admin_password}
-                        className="focus:ring-0 focus:outline-none"
-                      />
-                    </td>
-                    <td>
-                      <span>{admin.role}</span>
-                    </td>
+                      <td
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setAdminIdToBePassed(admin.admin_id);
+                          showModal();
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-red-600">
+                          <span>Delete</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16"
+                            width="14"
+                            fill="red"
+                            viewBox="0 0 448 512"
+                          >
+                            <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z" />
+                          </svg>
+                        </div>
+                      </td>
+                    </tr>
+                  </>
+                ) : (
+                  <>
+                    <tr>
+                      <td>Super Admin</td>
+                    </tr>
+                    <tr key={index} className="font-normal">
+                      <td>{admin.admin_username}</td>
+                      <td className="text-center ">
+                        <input
+                          type={hideNewPassword ? "password" : "text"}
+                          value={admin.admin_password}
+                          className="focus:ring-0 focus:outline-none"
+                        />
+                      </td>
+                      <td>
+                        <span>{admin.role}</span>
+                      </td>
 
-                    <td
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setAdminIdToBePassed(admin.admin_id);
-                        setNameToBePassed(admin.admin_username);
-                        setPasswordToBePassed(admin.admin_password);
-                        showUpdateModal();
-                      }}
-                    >
-                      <div className="flex items-center gap-2 text-blue-600">
-                        <span>Update</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          height="16"
-                          width="16"
-                          fill="blue"
-                          viewBox="0 0 512 512"
-                        >
-                          <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z" />
-                        </svg>
-                      </div>
-                    </td>
-                    <td
-                      className="cursor-pointer"
-                      onClick={() => console.log(admin.admin_id)}
-                    ></td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Admin(s)</td>
-                  </tr>
-                </>
-              )
-            )}
+                      <td
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setAdminIdToBePassed(admin.admin_id);
+                          setNameToBePassed(admin.admin_username);
+                          setPasswordToBePassed(admin.admin_password);
+                          showUpdateModal();
+                        }}
+                      >
+                        <div className="flex items-center gap-2 text-blue-600">
+                          <span>Update</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16"
+                            width="16"
+                            fill="blue"
+                            viewBox="0 0 512 512"
+                          >
+                            <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z" />
+                          </svg>
+                        </div>
+                      </td>
+                      <td
+                        className="cursor-pointer"
+                        onClick={() => console.log(admin.admin_id)}
+                      ></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Admin(s)</td>
+                    </tr>
+                  </>
+                )
+              )}
           </tbody>
         </table>
       </section>

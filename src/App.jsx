@@ -41,61 +41,72 @@ function App() {
           path="/*"
           element={
             <>
-              <section className="fixed z-40 w-full">
+              {/* <section className="fixed z-40 w-full"> */}
+              <section className="fixed z-10 w-full">
                 <NavBar />
               </section>
-              <section className="fixed h-screen ml-4 w-fit top-20">
-                <SideBar />
-              </section>
-              <section className="float-right my-20 mr-5 rounded-lg main-content">
-                <Routes>
-                  {/* Rest of your routes */}
-                  <Route path="/login" element={<LogIn />} />
-                  <Route path="/" element={<DashBoard />} />
-                  <Route path="/listofchildren" element={<ListOfChildren />} />
-                  <Route path="/bmitracking" element={<BMITracking />} />
-                  <Route path="/addchildinfo" element={<AddChildInfo />} />
-                  <Route
-                    path="/viewbmitracking/:childId"
-                    element={<ViewBMITracking />}
-                  />
-                  <Route
-                    path="/viewbmitracking/addbmi/:childId"
-                    element={<AddBMI />}
-                  />
-                  <Route
-                    path="/viewbmitracking/addmedicalhistory/:childId"
-                    element={<AddMedicalHistory />}
-                  />
-                  <Route path="/immunization" element={<Immunization />} />
-                  <Route
-                    path="/viewimmunization/:childId"
-                    element={<ViewImmunization />}
-                  />
-                  <Route
-                    path="/addimmunization"
-                    element={<AddImmunization />}
-                  />
-                  <Route path="/reminders" element={<Reminders />} />
-                  <Route path="/addMessage" element={<AddMessage />} />
-                  <Route path="/remindersView" element={<RemindersView />} />
-                  <Route
-                    path="/viewMessages/:parentID/:childID"
-                    element={<ViewMessage />}
-                  />
+              {/* <section className="fixed h-screen w-fit top-20"> */}
+              <main className="flex gap-1">
+                <section className="invisible">
+                  <SideBar />
+                </section>
+                <section className="fixed h-full pt-20 border-r">
+                  <SideBar />
+                </section>
+                {/* <section className="float-right my-20 mr-5 rounded-lg main-content"> */}
+                <section className="flex-1 px-3 mt-20">
+                  <Routes>
+                    {/* Rest of your routes */}
+                    <Route path="/login" element={<LogIn />} />
+                    <Route path="/" element={<DashBoard />} />
+                    <Route
+                      path="/listofchildren"
+                      element={<ListOfChildren />}
+                    />
+                    <Route path="/bmitracking" element={<BMITracking />} />
+                    <Route path="/addchildinfo" element={<AddChildInfo />} />
+                    <Route
+                      path="/viewbmitracking/:childId"
+                      element={<ViewBMITracking />}
+                    />
+                    <Route
+                      path="/viewbmitracking/addbmi/:childId"
+                      element={<AddBMI />}
+                    />
+                    <Route
+                      path="/viewbmitracking/addmedicalhistory/:childId"
+                      element={<AddMedicalHistory />}
+                    />
+                    <Route path="/immunization" element={<Immunization />} />
+                    <Route
+                      path="/viewimmunization/:childId"
+                      element={<ViewImmunization />}
+                    />
+                    <Route
+                      path="/addimmunization"
+                      element={<AddImmunization />}
+                    />
+                    <Route path="/reminders" element={<Reminders />} />
+                    <Route path="/addMessage" element={<AddMessage />} />
+                    <Route path="/remindersView" element={<RemindersView />} />
+                    <Route
+                      path="/viewMessages/:parentID/:childID"
+                      element={<ViewMessage />}
+                    />
 
-                  {/* Manage Accounts */}
-                  {isAdmin() ? (
-                    <>
-                      <Route
-                        path="/manageaccounts"
-                        element={<ManageAccounts />}
-                      />
-                      <Route path="/addadmin" element={<AddAdmin />} />
-                    </>
-                  ) : null}
-                </Routes>
-              </section>
+                    {/* Manage Accounts */}
+                    {isAdmin() ? (
+                      <>
+                        <Route
+                          path="/manageaccounts"
+                          element={<ManageAccounts />}
+                        />
+                        <Route path="/addadmin" element={<AddAdmin />} />
+                      </>
+                    ) : null}
+                  </Routes>
+                </section>
+              </main>
             </>
           }
         />

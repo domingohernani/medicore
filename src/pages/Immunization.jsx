@@ -1,6 +1,5 @@
 import info from "../assets/bmitrackingassets/info.svg";
-import addIcon from "../assets/bmitrackingassets/addIcon.svg";
-import filter from "../assets/bmitrackingassets/filterIcon.svg";
+import filter from "../assets/generalIcons/sort.svg";
 import { NavLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -42,14 +41,6 @@ export default function Immunization() {
         console.log(error);
       }
     }
-    // } else {
-    //   try {
-    //     const response = await axios.get("http://localhost:8800/completedBMI");
-    //     setChildren(response.data);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
   };
 
   const handleSort = (property) => {
@@ -97,28 +88,25 @@ export default function Immunization() {
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Child Immunization Records
         </h3>
-        <div className="flex items-center flex-1 gap-2 ml-4">
+        <div className="flex items-center flex-1 gap-2 h-fit">
           <input
             type="text"
-            className="w-2/3 h-8 pl-3 rounded-lg bg-CD9D9D9"
-            placeholder="Search by name"
+            className="w-2/3 h-full py-4 pl-3 border focus:outline-none"
+            placeholder="Search by name..."
             onChange={(e) => setSearch(e.target.value)}
             value={search}
           />
-          <button className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg bg-C5FA9D6">
-            <img src={filter} alt="" width={"20px"} />
-            <select
-              className="flex items-center justify-center h-8 gap-1 px-2 text-sm text-white rounded-lg focus:outline-none bg-C5FA9D6"
-              onChange={(e) => {
-                handleSort(e.target.value);
-              }}
-            >
-              <option value={"child_id"}>Child ID</option>
-              <option value={"name"}>Name</option>
-              <option value={"age"}>Age</option>
-              <option value={"sex"}>Sex</option>
-            </select>
-          </button>
+          <select
+            className="h-full px-2 py-4 pr-2 text-sm text-gray-400 border focus:outline-none"
+            onChange={(e) => {
+              handleSort(e.target.value);
+            }}
+          >
+            <option value={"child_id"}>Child ID</option>
+            <option value={"name"}>Name</option>
+            <option value={"age"}>Age</option>
+            <option value={"sex"}>Sex</option>
+          </select>
         </div>
         {/* <NavLink to={"/addimmunization"}>
           <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
