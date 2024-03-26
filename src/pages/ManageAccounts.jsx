@@ -68,7 +68,7 @@ export default function ManageAccounts() {
           />
         </div>
         <NavLink to={"/addadmin"}>
-          <button className="flex items-center justify-center rounded-none px-4 py-4 gap-2 text-white">
+          <button className="flex items-center justify-center gap-2 px-4 py-4 text-white rounded-none">
             <img src={addIcon} alt="" width={"14px"} />
             <span>Add Account</span>
           </button>

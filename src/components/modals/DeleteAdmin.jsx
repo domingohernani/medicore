@@ -24,7 +24,7 @@ export default function DeleteAdmin({ showModal, admin_id }) {
 
   return ReactDOM.createPortal(
     <section
-      className="fixed flex items-center justify-center w-full h-full bg-opacity-50 alertModal bg-CD9D9D9"
+      className="fixed top-0 z-10 flex items-center justify-center w-full h-full bg-opacity-50 alertModal bg-CD9D9D9"
       id="deactivationModal"
     >
       <div className="flex flex-col items-center w-5/12 gap-2 px-8 py-12 bg-white rounded-lg">
