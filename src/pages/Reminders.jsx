@@ -55,7 +55,7 @@ export default function RemindersView() {
         {filteredReminders.map((reminder, index) => (
           <div
             key={index}
-            className="relative p-4 my-3 bg-white rounded-md cursor-pointer"
+            className="relative p-4 my-3  hover:bg-slate-100 rounded-md cursor-pointer"
             onClick={() =>
               navigate(`/viewMessages/${reminder.parentID}/${reminder.childID}`)
             }

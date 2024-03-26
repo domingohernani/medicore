@@ -51,7 +51,7 @@ export default function Login() {
   };
 
   return (
-    <div className="absolute top-0 left-0 flex flex-col w-screen h-screen mx-auto bg-white">
+    <div className="absolute top-0 z-10 left-0 flex flex-col w-screen h-screen mx-auto bg-white">
       <div className="w-10/12 max-w-4xl mt-8 ml-9">
         <h6 className="font-bold logo">MediCore</h6>
         <p className="welcomeText">Barangay Child Health Monitoring System</p>

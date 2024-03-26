@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import WelcomeBanner from "../components/WelcomeBanner";
-import addIcon from "../assets/bmitrackingassets/addIcon.svg";
-import filter from "../assets/generalIcons/sort.svg";
+import addIcon from "../assets/bmitrackingassets/plus.svg";
 import axios from "axios";
 import info from "../assets/bmitrackingassets/info.svg";
 import { NavLink } from "react-router-dom";
@@ -63,7 +61,7 @@ export default function ListOfChildren() {
   });
 
   return (
-    <section>
+    <section className="">
       <div className="flex items-center justify-center">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           List Of Children
@@ -89,8 +87,9 @@ export default function ListOfChildren() {
           </select>
         </div>
         <NavLink to={"/addchildinfo"}>
-          <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
-            <img src={addIcon} alt="" width={"25px"} /> Add New Record
+          <button className="flex items-center justify-center rounded-none px-4 py-4 gap-2 text-white">
+            <img src={addIcon} alt="" width={"14px"} />
+            <span>Add Child</span>
           </button>
         </NavLink>
       </div>

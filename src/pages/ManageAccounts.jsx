@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 
 import axios from "axios";
-import addIcon from "../assets/bmitrackingassets/addIcon.svg";
+import addIcon from "../assets/bmitrackingassets/plus.svg";
 import DeleteAdmin from "../components/modals/DeleteAdmin";
 import UpdateAdminModal from "../components/modals/UpdateAdminModal";
 
@@ -54,7 +54,6 @@ export default function ManageAccounts() {
           oldPassword={passwordToBePassed}
         />
       )}
-
       <div className="flex items-center justify-center">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Manage Accounts
@@ -67,11 +66,11 @@ export default function ManageAccounts() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-         
         </div>
         <NavLink to={"/addadmin"}>
-          <button className="flex items-center justify-center gap-1 text-white bg-C0076BE">
-            <img src={addIcon} alt="" width={"25px"} /> Add New Admin
+          <button className="flex items-center justify-center rounded-none px-4 py-4 gap-2 text-white">
+            <img src={addIcon} alt="" width={"14px"} />
+            <span>Add Account</span>
           </button>
         </NavLink>
       </div>

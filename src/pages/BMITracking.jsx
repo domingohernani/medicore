@@ -141,7 +141,7 @@ export default function BMITracking() {
   });
 
   return (
-    <section>
+    <section className="">
       {statusModal && (
         <Deactivation
           toggleDeactivationModal={toggleDeactivationModal}
@@ -203,13 +203,6 @@ export default function BMITracking() {
                 >
                   Inactive
                 </option>
-                {/* <option
-                  value="completed"
-                  key="completed"
-                  className="border-none outline-none"
-                >
-                  Completed
-                </option> */}
               </select>
             </th>
           </tr>
@@ -226,7 +219,6 @@ export default function BMITracking() {
                 <tr key={index}>
                   <td>CAB-UR-{child.child_id}</td>
                   <td>{child.name}</td>
-                  {/* <td>{child.age}</td> */}
                   <td>{child.age_in_months} month/s</td>
 
                   <td>{child.sex}</td>

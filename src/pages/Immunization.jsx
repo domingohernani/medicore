@@ -83,7 +83,7 @@ export default function Immunization() {
     .filter((child) => child.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <section>
+    <section className="">
       <div className="flex items-center justify-between">
         <h3 className="px-6 py-2 font-semibold bg-white rounded-lg">
           Child Immunization Records

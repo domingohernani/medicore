@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import back from "../assets/bmitrackingassets/back.svg";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import AddBMI from "./AddBMI";
 import axios from "axios";
@@ -243,12 +242,18 @@ export default function ViewBMITracking() {
     <section>
       <div className="flex items-center justify-between gap-4">
         <div
-          className="p-1 bg-white rounded-full cursor-pointer w-fit"
+          className="w-10 h-10 p-1 cursor-pointer"
           onClick={() => navigate("/bmitracking")}
         >
-          <img src={back} alt="" width={"40px"} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            id="Outline"
+            viewBox="0 0 24 24"
+          >
+            <path d="M10.6,12.71a1,1,0,0,1,0-1.42l4.59-4.58a1,1,0,0,0,0-1.42,1,1,0,0,0-1.41,0L9.19,9.88a3,3,0,0,0,0,4.24l4.59,4.59a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z" />
+          </svg>
         </div>
-        <h3 className="flex-1 px-6 py-4 mx-6 text-lg font-normal text-center text-blue-600 bg-white rounded-lg w-fit ">
+        <h3 className="flex-1 px-6 py-4 mx-6 font-semibold">
           Body Mass Index Tracking Information
         </h3>
         <div className="flex items-center gap-4">
@@ -361,7 +366,7 @@ export default function ViewBMITracking() {
               <span className="font-bold">{childDetails.place_of_birth}</span>
             )}
           </div>
-          <div className="flex flex-col col-start-3 col-span-2 ">
+          <div className="flex flex-col col-span-2 col-start-3 ">
             <span>Address</span>
             {updateButtonClicked ? (
               <input
@@ -458,7 +463,7 @@ export default function ViewBMITracking() {
           </div>
         </div>
         <div className="pb-3 text-center rounded-lg max-h-80">
-          <h4 className="py-4 px-4 text-base text-center text-blue-600 bg-white rounded-md">
+          <h4 className="px-4 py-4 text-base text-center text-blue-600 bg-white rounded-md">
             Medical History & Records
           </h4>
           <ul className="py-2 my-auto mt-4 ml-1 text-left text-black bg-white border-2 rounded-lg px-9 medicalhistoryrecords">
@@ -501,9 +506,9 @@ export default function ViewBMITracking() {
       <section className="flex gap-2 mt-3">
         <div className="flex-1 gap-3 rounded-lg">
           <div className="px-4 py-3 text-gray-500 bg-white rounded-lg">
-            <span className="px-5 text-base text-blue-600">Prescription</span>
+            <span className="font-semibold text-black">Prescription</span>
             <hr className="my-4 bg-gray-100 " />
-            <ul className="text-left list-decimal px-9 text-black">
+            <ul className="text-left text-black list-disc px-9">
               {bmiHistory.length > 0 ? (
                 <>
                   <Prescription
@@ -515,14 +520,12 @@ export default function ViewBMITracking() {
                 ""
               )}
               {medicinePrescription.map((item) =>
-                item ? <li>{item}</li> : ""
+                item ? <li className="my-2">{item}</li> : ""
               )}
             </ul>
-
-            {/*  */}
           </div>
           <div className="px-4 py-3 my-3 bg-white rounded-lg ">
-            <span className="block px-4 py-2 text-base text-blue-600 bg-white rounded-lg mr-7">
+            <span className="block py-2 font-semibold text-black bg-white rounded-lg mr-7">
               BMI History
             </span>
             <hr />
@@ -532,7 +535,8 @@ export default function ViewBMITracking() {
               ) : (
                 bmiHistory.map((bmi, element) => {
                   return (
-                    <div className="flex p-3 mb-5 border-2 border-gray-100 rounded-md">
+                    <div className="flex p-3 mb-5 rounded-md hover:bg-slate-100">
+                      <h3 className="mr-2">{element + 1}).</h3> <br/>
                       <div className="flex-1">
                         {calculateBMI(bmi.weight, bmi.height)}
                       </div>
@@ -552,53 +556,13 @@ export default function ViewBMITracking() {
                         </span>
                       </div>
                     </div>
-
-                    // <li key={element}>
-                    //   <span>Date: {bmi.ht_date}</span>
-                    //   <ul className="px-10 py-2 ">
-                    //     <li>Weight: {bmi.weight} kg</li>
-                    //     <li>Height: {bmi.height} cm</li>
-                    //     {calculateBMI(bmi.weight, bmi.height)}
-                    //   </ul>
-                    // </li>
                   );
                 })
               )}
             </ul>
-
-            {/* <span className="text-base">Prescription</span>
-            <hr className="my-4 prescriptionHr" />
-            <ul className="text-left list-disc">
-              {bmiHistory.length > 0 ? (
-                <Prescription
-                  height={bmiHistory[0].height}
-                  weight={bmiHistory[0].weight}
-                ></Prescription>
-              ) : (
-                <span className="text-center">No BMI available</span>
-              )}
-            </ul> */}
           </div>
         </div>
-        <div className="w-64 mx-1">
-          {/* <span className="block px-4 py-2 text-blue-600 bg-white rounded-lg">
-            BMI History
-          </span>
-          <ul className="px-5 py-2 mt-3 text-gray-500 list-disc rounded-lg bmiHistory ">
-            {bmiHistory.map((bmi, element) => {
-              return (
-                <li key={element}>
-                  <span>Date: {bmi.ht_date}</span>
-                  <ul className="px-6 py-2 list-disc ">
-                    <li>Weight: {bmi.weight} kg</li>
-                    <li>Height: {bmi.height} cm</li>
-                    {calculateBMI(bmi.weight, bmi.height)}
-                  </ul>
-                </li>
-              );
-            })}
-          </ul> */}
-        </div>
+        <div className="w-64 mx-1"></div>
       </section>
     </section>
   );

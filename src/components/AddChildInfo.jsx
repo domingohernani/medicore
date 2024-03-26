@@ -80,7 +80,7 @@ export default function AddChildInfo() {
         mother,
         father,
         mothersNo,
-        fathersNo
+        fathersNo,
       });
       console.log(response);
       if (response.data.reloadPage) {
@@ -89,7 +89,6 @@ export default function AddChildInfo() {
     } catch (error) {
       console.log(error);
     }
-    
 
     console.log("Name:", fullName);
     console.log("Birthdate:", birthdate);
@@ -110,12 +109,12 @@ export default function AddChildInfo() {
   };
 
   return (
-    <section className="w-9/12 mx-auto">
-      <section className="p-3 text-center bg-white border rounded-lg border-C0076BE text-blue-950">
+    <section className="w-9/12 mx-auto ">
+      <section className="p-3 text-center bg-white border border-C0076BE text-blue-950">
         <p className="text-3xl">Child Information Form</p>
         <p>Please provide the child's information below</p>
       </section>
-      <section className="mt-3 bg-white border rounded-lg border-C0076BE">
+      <section className="mt-3 bg-white border border-C0076BE">
         <div className="px-5 py-4 border-b border-C0076BE">
           Child's Information
         </div>
@@ -123,7 +122,7 @@ export default function AddChildInfo() {
           <label className="font-semibold">Date</label>
           <input
             type="date"
-            className="px-1 py-2 pl-3 text-center bg-white border rounded-lg border-blue-950"
+            className="px-1 py-2 pl-3 text-center bg-white border border-blue-950"
             value={getCurrentDate()}
             readOnly
           />
@@ -135,7 +134,7 @@ export default function AddChildInfo() {
               <input
                 type="text"
                 value={firstName}
-                className="w-full px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+                className="w-full px-1 py-2 pl-3 bg-white border border-blue-950"
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
@@ -144,7 +143,7 @@ export default function AddChildInfo() {
               <input
                 type="text"
                 value={secondName}
-                className="w-full px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+                className="w-full px-1 py-2 pl-3 bg-white border border-blue-950"
                 onChange={(e) => setSecondName(e.target.value)}
               />
             </div>
@@ -154,39 +153,18 @@ export default function AddChildInfo() {
                 type="text"
                 maxLength="1"
                 value={middleInitial}
-                className="w-full px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+                className="w-full px-1 py-2 pl-3 bg-white border border-blue-950"
                 onChange={(e) => setMiddleInitial(e.target.value)}
               />
             </div>
           </div>
-          {/* <div className="flex flex-col flex-1">
-            <label className="font-semibold">Birthdate</label>
-            <input
-              type="date"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
-              onChange={(e) => {
-                const selectedDate = new Date(e.target.value);
-                const formattedDate = selectedDate.toISOString().slice(0, 10);
-                setBirthdate(formattedDate);
-              }}
-            />
-          </div> */}
-
-          {/* <div className="flex flex-col">
-            <label className="font-semibold">Age</label>
-            <input
-              type="number"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
-              onChange={(e) => setAge(e.target.value)}
-            />
-          </div> */}
         </div>
         <div className="flex px-5 gap-7">
           <div className="flex flex-col flex-1">
             <label className="font-semibold">Birthdate</label>
             <input
               type="date"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => {
                 const selectedDate = new Date(e.target.value);
                 const formattedDate = selectedDate.toISOString().slice(0, 10);
@@ -198,7 +176,7 @@ export default function AddChildInfo() {
           <div className="flex flex-col flex-1">
             <label className="font-semibold">Sex</label>
             <select
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setSex(e.target.value)}
             >
               <option value="Male" key="male">
@@ -213,25 +191,17 @@ export default function AddChildInfo() {
             <label className="font-semibold">Place of birth</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setPlaceOfBirth(e.target.value)}
             />
           </div>
-          {/* <div className="flex flex-col">
-            <label className="font-semibold">Contact No.</label>
-            <input
-              type="number"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
-              onChange={(e) => setNumber(e.target.value)}
-            />
-          </div> */}
         </div>
         <div className="flex gap-5 px-5">
           <div className="flex flex-col w-20">
             <label className="font-semibold">Zone</label>
             <input
               type="number"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setZone(e.target.value)}
               value={zone}
             />
@@ -240,7 +210,7 @@ export default function AddChildInfo() {
             <label className="font-semibold">Barangay</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setBarangay(e.target.value)}
               value={barangay}
             />
@@ -249,7 +219,7 @@ export default function AddChildInfo() {
             <label className="font-semibold">City/Town</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setCityTown(e.target.value)}
               value={cityTown}
             />
@@ -258,30 +228,18 @@ export default function AddChildInfo() {
             <label className="font-semibold">Province</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setProvince(e.target.value)}
               value={province}
             />
           </div>
-          {/* <div className="flex flex-col flex-1">
-            <label className="font-semibold">Birthdate</label>
-            <input
-              type="date"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
-              onChange={(e) => {
-                const selectedDate = new Date(e.target.value);
-                const formattedDate = selectedDate.toISOString().slice(0, 10);
-                setBirthdate(formattedDate);
-              }}
-            />
-          </div> */}
         </div>
         <div className="flex gap-5 px-5">
           <div className="flex flex-col flex-1">
             <label className="font-semibold">Mother's Name</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setMother(e.target.value)}
             />
           </div>
@@ -289,46 +247,18 @@ export default function AddChildInfo() {
             <label className="font-semibold">Father's Name</label>
             <input
               type="text"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onChange={(e) => setFather(e.target.value)}
             />
           </div>
         </div>
-        <div className="flex w-4/6 gap-5 mx-auto mt-3">
-          {/* <div className="flex flex-col flex-1">
-            <label className="font-semibold">Weight</label>
-            <div className="flex">
-              <input
-                type="number"
-                className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
-                onChange={(e) => setWeight(e.target.value)}
-              />
-              <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
-                KG
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col flex-1">
-            <label className="font-semibold">Height</label>
-            <div className="flex">
-              <input
-                type="number"
-                className="px-1 py-2 pl-3 bg-white border rounded-l-lg border-blue-950"
-                onChange={(e) => setHeight(e.target.value)}
-              />
-              <span className="flex items-center justify-center px-3 pl-3 border rounded-r-lg border-blue-950">
-                CM
-              </span>
-            </div>
-          </div> */}
-        </div>
         <div className="flex gap-5 px-5">
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-col flex-1">
             <label className="font-semibold">Mother's No.</label>
             <input
               type="number"
               placeholder="eg: 09123456789"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               onInput={(e) => {
                 e.target.value = e.target.value
                   .replace(/[^0-9]/g, "")
@@ -338,12 +268,12 @@ export default function AddChildInfo() {
               onChange={(e) => setMothersNo(e.target.value)}
             />
           </div>
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-col flex-1">
             <label className="font-semibold">Father's No.</label>
             <input
               type="number"
               placeholder="eg: 09123456789"
-              className="px-1 py-2 pl-3 bg-white border rounded-lg border-blue-950"
+              className="px-1 py-2 pl-3 bg-white border border-blue-950"
               maxLength="11"
               onInput={(e) => {
                 e.target.value = e.target.value
@@ -357,16 +287,19 @@ export default function AddChildInfo() {
         </div>
 
         <div className="flex w-3/6 mx-auto mt-5 mb-8 gap-9">
-          <button className="flex-1 text-white" onClick={addButton}>
-            Add
-          </button>
           <button
-            className="flex-1 text-gray-500 bg-CEDEDED border-blue-950"
+            className="flex-1 bg-white rounded-none border-blue-950"
             onClick={() => {
               navigate("/listofchildren");
             }}
           >
             Cancel
+          </button>
+          <button
+            className="flex-1 text-white rounded-none"
+            onClick={addButton}
+          >
+            Add
           </button>
         </div>
       </section>

@@ -41,11 +41,9 @@ function App() {
           path="/*"
           element={
             <>
-              {/* <section className="fixed z-40 w-full"> */}
               <section className="fixed z-10 w-full">
                 <NavBar />
               </section>
-              {/* <section className="fixed h-screen w-fit top-20"> */}
               <main className="flex gap-1">
                 <section className="invisible">
                   <SideBar />
@@ -53,7 +51,6 @@ function App() {
                 <section className="fixed h-full pt-20 border-r">
                   <SideBar />
                 </section>
-                {/* <section className="float-right my-20 mr-5 rounded-lg main-content"> */}
                 <section className="flex-1 px-3 mt-20">
                   <Routes>
                     {/* Rest of your routes */}
