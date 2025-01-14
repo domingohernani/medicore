@@ -11,19 +11,7 @@ lerna-debug.log*
 .env.*
 !.env.example
 
-# Node modules
-client/node_modules
-server/node_modules
-
-# Environment variables
-client/env
-client/env.local
-client/env.*.local
-server/env
-server/env.local
-server/env.*.local
-
-
+node_modules
 dist
 dist-ssr
 *.local
