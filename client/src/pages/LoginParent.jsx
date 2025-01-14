@@ -208,7 +208,7 @@ const LoginParent = () => {
               </div>
               <div className="m-4 ml-auto w-fit">
                 <Link to={"/login"} className="text-black underline">
-                  Login as Midwife
+                  Login as President
                 </Link>
               </div>
             </form>
